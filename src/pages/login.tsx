@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import LoginCont from "@/container/loginCont";
 import AlertComp from "@/component/common/alert";
 import { AlertProps } from "@mui/material";
 import Loader from "@/component/common/loader";
+import { signIn } from "next-auth/react";
 
 interface LoginValues {
   email: string;
@@ -12,7 +12,7 @@ interface LoginValues {
 }
 
 interface AlertCompProps {
-  severity: AlertProps["severity"]; // Usamos el tipo de Material UI para asegurarnos de que sea válido
+  severity: AlertProps["severity"];
   title: string;
   message: string;
 }
@@ -29,42 +29,50 @@ const Login: React.FC = () => {
 
   const onLogin = async (values: LoginValues): Promise<void> => {
     setLoading(true);
-    try {
-      const { data } = await axios.post(
-        "https://test.vrt-fcs.com/api_vrt/api/login/Login",
-        {
-          email: values.email,
-          password: values.password,
-        },
-        { withCredentials: true }
-      );
-      console.log("data", data);
+    if (!values.email || !values.password) {
       setAlertInfo({
-        severity: "success",
-        title: "Éxito",
-        message: "Inicio de sesión exitoso",
+        severity: "error",
+        title: "Error",
+        message: "Por favor, completa todos los campos.",
       });
       setShowAlert(true);
+      setLoading(false);
+      return;
+    }
 
-      router.push("/");
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        // Si el error es de Axios
+    try {
+      const result = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false, // Evita la redirección automática
+      });
+      console.log("result", result);
+
+      // Si el login falla, mostrar el mensaje de error en la alerta
+      if (result?.error) {
         setAlertInfo({
           severity: "error",
           title: "Error",
-          message: error.response?.data?.message || "Error de serivcio",
+          message: result.error || "Error desconocido",
         });
         setShowAlert(true);
       } else {
-        // Si el error es otro tipo
         setAlertInfo({
-          severity: "error",
-          title: "Error",
-          message: "Error desconocido",
+          severity: "success",
+          title: "Éxito",
+          message: "Inicio de sesión exitoso",
         });
         setShowAlert(true);
+        router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso
       }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message: "Error desconocido",
+      });
+      setShowAlert(true);
     } finally {
       setLoading(false);
     }
@@ -92,7 +100,6 @@ const Login: React.FC = () => {
           />
         </>
       )}
-      ;
     </>
   );
 };

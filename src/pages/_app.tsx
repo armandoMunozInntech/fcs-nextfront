@@ -6,24 +6,17 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "@/styles/globals.css";
 import Loader from "@/component/common/loader";
 import localFont from "next/font/local";
+import { SessionProvider } from "next-auth/react";
 
 const calibre = localFont({
   src: [
-    {
-      path: "./Calibre/Calibre-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
+    { path: "./Calibre/Calibre-Regular.woff2", weight: "400", style: "normal" },
     {
       path: "./Calibre/Calibre-RegularItalic.woff2",
       weight: "400",
       style: "italic",
     },
-    {
-      path: "./Calibre/Calibre-Bold.woff2",
-      weight: "700",
-      style: "normal",
-    },
+    { path: "./Calibre/Calibre-Bold.woff2", weight: "700", style: "normal" },
     {
       path: "./Calibre/Calibre-BoldItalic.woff2",
       weight: "700",
@@ -33,29 +26,19 @@ const calibre = localFont({
 });
 
 const theme = createTheme({
-  typography: { fontFamily: "Calibre, Arial" },
+  typography: { fontFamily: "Calibre, Arial, sans-serif" },
   palette: {
-    primary: {
-      main: "#fe5b1b",
-      contrastText: "#ffffff",
-    },
-    secondary: {
-      main: "#000000",
-      contrastText: "#ffffff",
-    },
+    primary: { main: "#fe5b1b", contrastText: "#ffffff" },
+    secondary: { main: "#000000", contrastText: "#ffffff" },
   },
 });
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const jssStyles = document.querySelector("#jss-server-side");
-    if (jssStyles) {
-      jssStyles.parentElement?.removeChild(jssStyles);
-    }
-  }, []);
 
   useEffect(() => {
     const handleStart = () => setLoading(true);
@@ -73,11 +56,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }, [router]);
 
   return (
-    <>
+    <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Head>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
+          <link rel="icon" href="/logo_vertiv_principal.png" sizes="any" />
           <title>FCS</title>
         </Head>
         {loading ? (
@@ -86,7 +70,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <Component {...pageProps} className={calibre.className} />
         )}
       </ThemeProvider>
-    </>
+    </SessionProvider>
   );
 };
 
