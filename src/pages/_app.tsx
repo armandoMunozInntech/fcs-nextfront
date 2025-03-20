@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+"use client";
 import { AppProps } from "next/app";
-import { useRouter } from "next/router";
 import Head from "next/head";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "@/styles/globals.css";
-import Loader from "@/component/common/loader";
 import localFont from "next/font/local";
 import { SessionProvider } from "next-auth/react";
+import { ReactElement, ReactNode } from "react";
+import { NextPage } from "next";
 
 const calibre = localFont({
   src: [
@@ -33,41 +33,35 @@ const theme = createTheme({
   },
 });
 
+export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
 const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps) => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const handleStart = () => setLoading(true);
-    const handleComplete = () => setLoading(false);
-
-    router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleComplete);
-    router.events.on("routeChangeError", handleComplete);
-
-    return () => {
-      router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleComplete);
-      router.events.off("routeChangeError", handleComplete);
-    };
-  }, [router]);
-
+}: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout || ((page) => page);
   return (
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-          <link rel="icon" href="/logo_vertiv_principal.png" sizes="any" />
-          <title>FCS</title>
-        </Head>
-        {loading ? (
-          <Loader />
-        ) : (
-          <Component {...pageProps} className={calibre.className} />
+        {getLayout(
+          <>
+            <Head>
+              <meta
+                name="viewport"
+                content="initial-scale=1, width=device-width"
+              />
+              <link rel="icon" href="/logo_vertiv_principal.png" sizes="any" />
+              <title>FCS</title>
+            </Head>
+            <CssBaseline />
+            <Component {...pageProps} className={calibre.className} />
+          </>
         )}
       </ThemeProvider>
     </SessionProvider>

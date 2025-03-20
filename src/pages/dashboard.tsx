@@ -1,18 +1,17 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Button, CircularProgress, Typography, Container } from "@mui/material";
+import { Button, Typography, Container } from "@mui/material";
+import { ReactElement } from "react";
+import DashboardLayout from "@/component/layout/dashboardLayout";
+import { NextPageWithLayout } from "./_app";
+import Loader from "@/component/common/loader";
 
-const Dashboard: React.FC = () => {
+const Dashboard: NextPageWithLayout = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // Mientras se carga la sesión
   if (status === "loading") {
-    return (
-      <Container sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
-      </Container>
-    );
+    return <Loader />;
   }
 
   // Si no hay sesión, redirige al usuario al inicio de sesión
@@ -25,7 +24,7 @@ const Dashboard: React.FC = () => {
 
   // Si hay sesión, muestra la página del dashboard
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container sx={{ mt: 4, minWidth: "100%" }}>
       <Typography variant="h4" gutterBottom>
         Bienvenido, {session.user?.name || "Usuario"}
       </Typography>
@@ -42,6 +41,10 @@ const Dashboard: React.FC = () => {
       </Button>
     </Container>
   );
+};
+
+Dashboard.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default Dashboard;

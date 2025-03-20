@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import LoginCont from "@/container/loginCont";
 import AlertComp from "@/component/common/alert";
 import { AlertProps } from "@mui/material";
-import Loader from "@/component/common/loader";
 import { signIn } from "next-auth/react";
+import Loader from "@/component/common/loader";
 
 interface LoginValues {
   email: string;
@@ -57,12 +57,6 @@ const Login: React.FC = () => {
         });
         setShowAlert(true);
       } else {
-        setAlertInfo({
-          severity: "success",
-          title: "Éxito",
-          message: "Inicio de sesión exitoso",
-        });
-        setShowAlert(true);
         router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso
       }
     } catch (error) {
@@ -73,33 +67,32 @@ const Login: React.FC = () => {
         message: "Error desconocido",
       });
       setShowAlert(true);
-    } finally {
       setLoading(false);
+    } finally {
     }
   };
 
+  // Mientras se carga la sesión
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
-          {showAlert && (
-            <AlertComp
-              severity={alertInfo.severity}
-              title={alertInfo.title}
-              message={alertInfo.message}
-              show={showAlert}
-              handleShow={setShowAlert}
-            />
-          )}
-          <LoginCont
-            onLogin={onLogin}
-            setAlertInfo={setAlertInfo}
-            setShowAlert={setShowAlert}
-          />
-        </>
+      {showAlert && (
+        <AlertComp
+          severity={alertInfo.severity}
+          title={alertInfo.title}
+          message={alertInfo.message}
+          show={showAlert}
+          handleShow={setShowAlert}
+        />
       )}
+      <LoginCont
+        onLogin={onLogin}
+        setAlertInfo={setAlertInfo}
+        setShowAlert={setShowAlert}
+      />
     </>
   );
 };

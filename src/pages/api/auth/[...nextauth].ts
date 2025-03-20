@@ -42,7 +42,7 @@ export default NextAuth({
           const userError: User = {
             id: "error",
             email: "email@error.com",
-            name: "Eror usuario",
+            name: "Armando Muñoz",
           };
           console.error(
             "Error durante el inicio de sesión: ",
@@ -53,9 +53,7 @@ export default NextAuth({
       },
     }),
   ],
-  pages: {
-    // No necesitas la propiedad error aquí
-  },
+  pages: {},
   callbacks: {
     async signIn({ user }) {
       return user ? true : false; // Devuelve true si el usuario es válido
