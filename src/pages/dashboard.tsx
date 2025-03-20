@@ -1,6 +1,6 @@
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Button, Typography, Container } from "@mui/material";
+import { Typography, Container } from "@mui/material";
 import { ReactElement } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "./_app";
@@ -31,14 +31,6 @@ const Dashboard: NextPageWithLayout = () => {
       <Typography variant="body1" gutterBottom>
         Tu correo: {session.user?.email}
       </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => signOut()}
-        sx={{ mt: 2 }}
-      >
-        Cerrar sesión
-      </Button>
     </Container>
   );
 };

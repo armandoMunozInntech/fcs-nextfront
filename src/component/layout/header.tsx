@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import {
   AppBar,
+  Box,
   Button,
   IconButton,
   Menu,
@@ -62,24 +63,24 @@ const Header: React.FC<HeaderProps> = ({
     switch (selectedFlag) {
       case "mexico":
         return (
-          <Image src={flagMexico} alt={selectedFlag} width={50} height={50} />
+          <Image src={flagMexico} alt={selectedFlag} width={30} height={30} />
         );
       case "chile":
         return (
-          <Image src={flagChile} alt={selectedFlag} width={50} height={50} />
+          <Image src={flagChile} alt={selectedFlag} width={30} height={30} />
         );
       case "argentina":
         return (
           <Image
             src={flagArgentina}
             alt={selectedFlag}
-            width={50}
-            height={50}
+            width={30}
+            height={30}
           />
         );
       case "colombia":
         return (
-          <Image src={flagColombia} alt={selectedFlag} width={50} height={50} />
+          <Image src={flagColombia} alt={selectedFlag} width={30} height={30} />
         );
 
       default:
@@ -123,11 +124,15 @@ const Header: React.FC<HeaderProps> = ({
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{ flexGrow: 1, pt: 1, lineHeight: 1 }}
+        >
           Field Costumer Service
         </Typography>
 
-        <div>
+        <Box component="div">
           {session?.user?.name || ""}
           <IconButton
             size="large"
@@ -142,15 +147,6 @@ const Header: React.FC<HeaderProps> = ({
           <Menu
             id="menu-appbar"
             anchorEl={menuAuth}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
             open={Boolean(menuAuth)}
             onClose={handleCloseAuth}
           >
@@ -158,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({
           </Menu>
           <Button
             variant="text"
-            color="primary"
+            color="secondary"
             onClick={handleClickFlag}
             aria-controls={open ? "flag-menu" : undefined}
             aria-haspopup="true"
@@ -181,7 +177,7 @@ const Header: React.FC<HeaderProps> = ({
               </MenuItem>
             ))}
           </Menu>
-        </div>
+        </Box>
       </Toolbar>
     </AppBar>
   );
