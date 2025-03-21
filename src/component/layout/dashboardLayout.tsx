@@ -4,33 +4,38 @@ import { useSession } from "next-auth/react";
 import {
   Box,
   Drawer,
-  Toolbar,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
   CssBaseline,
   Container,
   CircularProgress,
   Collapse,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import Header from "./header";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import MenuLeft from "./menuLeft";
+
+interface MenuItemProps {
+  label: string;
+  options?: { label: string; action: () => void }[]; // Opciones internas (submenús)
+  action?: () => void; // Acción directa si no tiene submenús
+}
 
 interface DashboardLayoutProps {
   children: ReactNode;
+  menuItems?: MenuItemProps[];
 }
 
-const drawerWidth = 240;
-
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+  children,
+  menuItems,
+}) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(isSmallScreen);
   const [selectedFlag, setSelectedFlag] = useState("mexico"); // México como predeterminado
+  const drawerWidth = isSmallScreen ? "100%" : 240;
 
   const togglerDrawer = () => {
     setOpen(!open);
@@ -52,38 +57,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     }
     return null;
   }
-  const drawer = (
-    <div>
-      <Toolbar />
-      <Box sx={{ overflow: "auto" }}>
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    </div>
-  );
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -92,6 +65,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         togglerDrawer={togglerDrawer}
         selectedFlag={selectedFlag}
         setSelectedFlag={setSelectedFlag}
+        menuItems={menuItems}
       />
       <Collapse
         orientation="horizontal"
@@ -113,7 +87,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           }}
           open={open}
         >
-          {drawer}
+          <MenuLeft />
         </Drawer>
       </Collapse>
       <Box component="main" sx={{ flexGrow: 1, mt: 8 }}>

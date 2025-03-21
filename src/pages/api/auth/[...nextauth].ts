@@ -38,7 +38,7 @@ export default NextAuth({
             // Si no hay usuario, retornar null
             return null;
           }
-        } catch (error) {
+        } catch (error: any) {
           const userError: User = {
             id: "error",
             email: "email@error.com",
