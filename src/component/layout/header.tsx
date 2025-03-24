@@ -23,9 +23,13 @@ import flagChile from "@/assets/images/flag-chile.png";
 import { signOut, useSession } from "next-auth/react";
 import logoVertiv from "@/assets/logo_vertiv_principal.png";
 
+interface optionItemProps {
+  label: string;
+  action: () => void;
+}
 interface MenuItemProps {
   label: string;
-  options?: { label: string; action: () => void }[]; // Opciones internas (submenús)
+  options?: optionItemProps[]; // Opciones internas (submenús)
   action?: () => void; // Acción directa si no tiene submenús
 }
 
@@ -43,13 +47,15 @@ const Header: React.FC<HeaderProps> = ({
   menuItems,
 }) => {
   const theme = useTheme();
+  const { data: session } = useSession();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
   const [menuAuth, setMenuAuth] = useState<null | HTMLElement>(null);
   const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
   const [menuDin, setMenuDin] = useState<boolean>(false);
-  const [activeSubMenu, setActiveSubMenu] = useState<null | HTMLElement>(null); // Para manejar submenús
   const openFlagMenu = Boolean(menuFlag);
-  const { data: session } = useSession();
+  const [menuOptions, setMenuOptions] = useState<optionItemProps[] | null>(
+    null
+  );
 
   const handleFlagClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuFlag(event.currentTarget);
@@ -60,16 +66,8 @@ const Header: React.FC<HeaderProps> = ({
     setMenuFlag(null);
   };
 
-  const handleMenuDinClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMenuDinClick = () => {
     setMenuDin(!menuDin);
-  };
-
-  const handleSubMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setActiveSubMenu(event.currentTarget);
-  };
-
-  const handleSubMenuClose = () => {
-    setActiveSubMenu(null);
   };
 
   const countries = [
@@ -98,84 +96,78 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const MenuDinamico = () => (
-    <Grid2
-      direction={isSmallScreen ? "column" : "row"}
-      sx={{
-        display: "flex",
-        gap: 1,
-        pt: 1,
-        overflowX: "auto",
-        alignItems: "center",
-        maxWidth: { sm: "auto", lg: "100%" },
-      }}
-    >
-      {menuItems?.map((item, index) =>
-        item.options ? (
-          <Box key={index}>
-            <Button
-              color="secondary"
-              onClick={handleSubMenuOpen}
-              aria-controls={
-                Boolean(activeSubMenu) ? `submenu-${index}` : undefined
-              }
-              aria-haspopup="true"
-            >
-              {item.label}
-            </Button>
-            {item.options && (
-              <Menu
-                id={`submenu-${index}`}
-                anchorEl={activeSubMenu}
-                open={Boolean(activeSubMenu)}
-                onClose={() => {
+  const menuOptionSM = () => {
+    return (
+      <Collapse in={!!menuOptions} unmountOnExit>
+        <Grid2
+          direction={isSmallScreen ? "column" : "row"}
+          justifyContent="center"
+          sx={{
+            display: "flex",
+            gap: 1,
+            overflowX: "auto",
+            alignItems: "center",
+            maxWidth: { sm: "auto", lg: "100%" },
+          }}
+        >
+          {menuOptions?.map((subItem: optionItemProps, subIndex: number) => (
+            <Grid2 key={subIndex}>
+              <Button
+                variant="text"
+                color="secondary"
+                sx={{
+                  width: "max-content",
+                  borderTop: "solid 1px",
+                  borderRadius: "0px",
+                }}
+                onClick={() => {
+                  subItem.action();
+                  setMenuOptions(null);
                   setMenuDin(false);
-                  handleSubMenuClose();
-                }}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
                 }}
               >
-                {item.options.map((option, subIndex) => (
-                  <MenuItem
-                    key={subIndex}
-                    onClick={() => {
-                      setMenuDin(false);
-                      handleSubMenuClose();
-                      option.action();
-                    }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>
-                      {option.label}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            )}
-          </Box>
-        ) : (
+                {subItem.label}
+              </Button>
+            </Grid2>
+          ))}
+        </Grid2>
+      </Collapse>
+    );
+  };
+
+  const MenuDinamico = () => {
+    return (
+      <Grid2
+        direction="row"
+        justifyContent="center"
+        sx={{
+          display: "flex",
+          gap: 1,
+          overflowX: "auto",
+          alignItems: "center",
+          maxWidth: { sm: "auto", lg: "100%" },
+          mt: 0,
+        }}
+      >
+        {menuItems?.map((item, index) => (
           <Button
-            color="secondary"
             key={index}
+            variant="text"
+            color="secondary"
+            sx={{ width: "max-content" }}
             onClick={() => {
-              setMenuDin(false);
+              setMenuOptions(item.options || null);
               if (item.action) {
-                item.action();
+                item?.action();
               }
             }}
           >
             {item.label}
           </Button>
-        )
-      )}
-    </Grid2>
-  );
+        ))}
+      </Grid2>
+    );
+  };
 
   return (
     <AppBar
@@ -250,7 +242,20 @@ const Header: React.FC<HeaderProps> = ({
                 <MenuIcon />
               </IconButton>
             ) : (
-              <MenuDinamico />
+              <Grid2
+                direction="row"
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  pt: 1,
+                  overflowX: "auto",
+                  alignItems: "center",
+                  maxWidth: { sm: "auto", lg: "100%" },
+                  mt: 0,
+                }}
+              >
+                <MenuDinamico />
+              </Grid2>
             )}
           </Grid2>
           <Grid2>
@@ -261,7 +266,7 @@ const Header: React.FC<HeaderProps> = ({
                 : null}
               <IconButton
                 size="large"
-                aria-label="account of current user"
+                aria-label="account"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={(event) => setMenuAuth(event.currentTarget)}
@@ -306,10 +311,49 @@ const Header: React.FC<HeaderProps> = ({
             </Box>
           </Grid2>
           {isSmallScreen && (
-            <Grid2 size={12}>
-              <Collapse in={menuDin}>
-                <MenuDinamico />
+            <Grid2
+              size={12}
+              direction={isSmallScreen ? "column" : "row"}
+              sx={{
+                display: "flex",
+                gap: 1,
+                pt: 1,
+                overflowX: "auto",
+                alignItems: "center",
+                maxWidth: { sm: "auto", lg: "100%" },
+              }}
+            >
+              <Collapse in={menuDin} unmountOnExit>
+                <Grid2
+                  size={12}
+                  direction="row"
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    pt: 1,
+                    overflowX: "auto",
+                    alignItems: "center",
+                  }}
+                >
+                  <MenuDinamico />
+                </Grid2>
               </Collapse>
+            </Grid2>
+          )}
+          {menuOptions && (
+            <Grid2
+              size={12}
+              direction={isSmallScreen ? "column" : "row"}
+              justifyContent="center"
+              sx={{
+                display: "flex",
+                gap: 1,
+                overflowX: "auto",
+                alignItems: "center",
+                maxWidth: { sm: "auto", lg: "100%" },
+              }}
+            >
+              {menuOptionSM()}
             </Grid2>
           )}
         </Grid2>

@@ -19,13 +19,7 @@ const menuItems: MenuItemProps[] = [
   },
   {
     label: "Reenvio Encuesta",
-    options: [
-      {
-        label: "Reenvio Encuesta",
-        action: () => console.log("Bitácora"),
-      },
-      { label: "Reportes", action: () => console.log("Bestel") },
-    ],
+    action: () => console.log("Reenvio Encuesta"),
   },
   {
     label: "Reportes",
@@ -34,37 +28,23 @@ const menuItems: MenuItemProps[] = [
         label: "Bitacora de usuarios",
         action: () => console.log("Bitácora"),
       },
-      { label: "Reportes", action: () => console.log("Bestel") },
-    ],
-  },
-  {
-    label: "Reportes",
-    options: [
+      { label: "Reporte Bestel", action: () => console.log("Reporte Bestel") },
       {
-        label: "Bitacora de usuarios",
-        action: () => console.log("Bitácora"),
+        label: "Ejecución de servicios",
+        action: () => console.log("Ejecución de servicios"),
       },
-      { label: "Reportes", action: () => console.log("Bestel") },
-    ],
-  },
-  {
-    label: "Reportes",
-    options: [
       {
-        label: "Bitacora de usuarios",
-        action: () => console.log("Bitácora"),
+        label: "Reporte Garantía",
+        action: () => console.log("Reporte Garantía"),
       },
-      { label: "Reportes", action: () => console.log("Bestel") },
-    ],
-  },
-  {
-    label: "Reportes",
-    options: [
       {
-        label: "Bitacora de usuarios",
-        action: () => console.log("Bitácora"),
+        label: "Materiales utilizados",
+        action: () => console.log("Materiales Utilizados"),
       },
-      { label: "Reportes", action: () => console.log("Bestel") },
+      {
+        label: "Encuesta de calidad",
+        action: () => console.log("Encuesta de calidad"),
+      },
     ],
   },
   {
