@@ -9,6 +9,8 @@ import {
   ListItemText,
   Collapse,
   Divider,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Home as HomeIcon,
@@ -19,45 +21,60 @@ import {
   ExpandMore,
   PhoneIphone,
 } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 
 const menuItems = [
   {
     label: "FCS",
     icon: <HomeIcon />,
     children: [
-      "FCS Field Customer",
-      "SRC Refacciones",
-      "Equipos",
-      "Clientes",
-      "EPP",
-      "Portal Bestel",
-      "Calendario Actividades",
+      { label: "FCS Field Customer", link: "/FCS" },
+      { label: "SRC Refacciones", link: "/FCS/SRC-Refacciones" },
+      { label: "Equipos", link: "/FCS/Equipos" },
+      { label: "Clientes", link: "/FCS/Equipos" },
+      { label: "EPP", link: "/FCS/EPP" },
+      { label: "Portal Bestel", link: "/FCS/Portal-Bestel" },
+      { label: "Calendario Actividades", link: "/FCS/Calendario-Actividades" },
     ],
   },
   {
     label: "Configuración",
     icon: <SettingsIcon />,
-    children: ["Usuarios", "Notificaciones", "Datos"],
+    children: [
+      { label: "Usuarios", link: "/Configuracion/Usuarios" },
+      { label: "Notificaciones", link: "/Configuracion/Notificaciones" },
+      { label: "Datos", link: "/Configuracion/Datos" },
+    ],
   },
   {
     label: "Tickets",
     icon: <TicketsIcon />,
+    link: "/Tickets",
   },
   {
     label: "VRT Store",
     icon: <PhoneIphone />,
+    link: "/VRT-Store-upload",
   },
   {
     label: "Reenvio Correos",
     icon: <MailIcon />,
+    link: "/Reenvio-correos",
   },
   {
     label: "VRT Store 2",
     icon: <PhoneIphone />,
+    link: "/VRT-Store-download",
   },
 ];
+interface MenuLeftProps {
+  setClose: (value: boolean) => void;
+}
 
-const MenuLeft: React.FC = () => {
+const MenuLeft: React.FC<MenuLeftProps> = ({ setClose }) => {
+  const router = useRouter();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [openSubMenu, setOpenSubMenu] = React.useState<string | null>(null);
 
   const handleToggle = (label: string) => {
@@ -91,12 +108,17 @@ const MenuLeft: React.FC = () => {
                 >
                   <List component="div" disablePadding>
                     {item.children.map((child) => (
-                      <ListItem key={child} disablePadding>
-                        <ListItemButton sx={{ pl: 4 }}>
-                          {/* <ListItemIcon>
-                            <MailIcon />
-                          </ListItemIcon> */}
-                          <ListItemText primary={child} />
+                      <ListItem key={child.label} disablePadding>
+                        <ListItemButton
+                          sx={{ pl: 4 }}
+                          onClick={() => {
+                            if (isSmallScreen) {
+                              setClose(false);
+                            }
+                            router.push(child.link);
+                          }}
+                        >
+                          <ListItemText primary={child.label} />
                         </ListItemButton>
                       </ListItem>
                     ))}

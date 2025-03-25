@@ -80,9 +80,9 @@ export default NextAuth({
               );
             }
           } else {
-            console.error("Unexpected error:", error);
+            console.error("Error Inesperado:", error);
           }
-          throw new Error("Failed to authenticate");
+          throw new Error("Falló la autenticación");
         }
       },
     }),

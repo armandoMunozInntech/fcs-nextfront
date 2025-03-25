@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   Box,
@@ -66,6 +66,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         selectedFlag={selectedFlag}
         setSelectedFlag={setSelectedFlag}
         menuItems={menuItems}
+        setClose={setOpen}
       />
       <Collapse
         orientation="horizontal"
@@ -87,7 +88,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           }}
           open={open}
         >
-          <MenuLeft />
+          <MenuLeft setClose={setOpen} />
         </Drawer>
       </Collapse>
       <Box component="main" sx={{ flexGrow: 1, mt: 8 }}>

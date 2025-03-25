@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   AppBar,
   Box,
@@ -22,6 +22,8 @@ import flagArgentina from "@/assets/images/flag-argentina.png";
 import flagChile from "@/assets/images/flag-chile.png";
 import { signOut, useSession } from "next-auth/react";
 import logoVertiv from "@/assets/logo_vertiv_principal.png";
+import { useRouter } from "next/navigation";
+import { useCloseOnClickOutside } from "@/utils/useCloseOnClickOutside";
 
 interface optionItemProps {
   label: string;
@@ -37,7 +39,8 @@ interface HeaderProps {
   togglerDrawer: () => void;
   setSelectedFlag: (value: string) => void;
   selectedFlag: string;
-  menuItems?: MenuItemProps[]; // Lista dinámica de menús
+  menuItems?: MenuItemProps[] | null; // Lista dinámica de menús
+  setClose: (value: boolean) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -45,10 +48,12 @@ const Header: React.FC<HeaderProps> = ({
   setSelectedFlag,
   selectedFlag,
   menuItems,
+  setClose,
 }) => {
+  const router = useRouter();
   const theme = useTheme();
   const { data: session } = useSession();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [menuAuth, setMenuAuth] = useState<null | HTMLElement>(null);
   const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
   const [menuDin, setMenuDin] = useState<boolean>(false);
@@ -56,6 +61,7 @@ const Header: React.FC<HeaderProps> = ({
   const [menuOptions, setMenuOptions] = useState<optionItemProps[] | null>(
     null
   );
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleFlagClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuFlag(event.currentTarget);
@@ -69,6 +75,10 @@ const Header: React.FC<HeaderProps> = ({
   const handleMenuDinClick = () => {
     setMenuDin(!menuDin);
   };
+  useCloseOnClickOutside(menuRef, () => {
+    setMenuDin(false);
+    setMenuOptions(null);
+  });
 
   const countries = [
     { name: "México", emoji: "mexico" },
@@ -184,6 +194,7 @@ const Header: React.FC<HeaderProps> = ({
         borderLeft: 0,
         borderRight: 0,
       }}
+      ref={menuRef}
     >
       <Toolbar>
         <Grid2
@@ -224,40 +235,49 @@ const Header: React.FC<HeaderProps> = ({
                 lineHeight: 1,
                 width: "auto",
                 fontWeight: "bold",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                if (isSmallScreen) {
+                  setClose(false);
+                }
+                router.push("/dashboard");
               }}
             >
               {isSmallScreen ? "FCS" : "Field Customer Service"}
             </Typography>
           </Grid2>
-          <Grid2>
-            {/* Menú dinámico */}
-            {isSmallScreen ? (
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                onClick={handleMenuDinClick}
-              >
-                <MenuIcon />
-              </IconButton>
-            ) : (
-              <Grid2
-                direction="row"
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  pt: 1,
-                  overflowX: "auto",
-                  alignItems: "center",
-                  maxWidth: { sm: "auto", lg: "100%" },
-                  mt: 0,
-                }}
-              >
-                <MenuDinamico />
-              </Grid2>
-            )}
-          </Grid2>
+          {menuItems && (
+            <Grid2>
+              {/* Menú dinámico */}
+              {isSmallScreen ? (
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={handleMenuDinClick}
+                >
+                  <MenuIcon />
+                </IconButton>
+              ) : (
+                <Grid2
+                  direction="row"
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    pt: 1,
+                    overflowX: "auto",
+                    alignItems: "center",
+                    maxWidth: { sm: "auto", lg: "100%" },
+                    mt: 0,
+                  }}
+                >
+                  <MenuDinamico />
+                </Grid2>
+              )}
+            </Grid2>
+          )}
           <Grid2 direction="row">
             {/* Información de sesión y bandera */}
             <Box>

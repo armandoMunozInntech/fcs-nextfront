@@ -6,53 +6,6 @@ import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import Loader from "@/component/common/loader";
 
-interface MenuItemProps {
-  label: string;
-  options?: { label: string; action: () => void }[]; // Opciones internas (submenús)
-  action?: () => void; // Acción directa si no tiene submenús
-}
-
-const menuItems: MenuItemProps[] = [
-  {
-    label: "Formatos y folios",
-    action: () => console.log("Formatos y folios"),
-  },
-  {
-    label: "Reenvio Encuesta",
-    action: () => console.log("Reenvio Encuesta"),
-  },
-  {
-    label: "Reportes",
-    options: [
-      {
-        label: "Bitacora de usuarios",
-        action: () => console.log("Bitácora"),
-      },
-      { label: "Reporte Bestel", action: () => console.log("Reporte Bestel") },
-      {
-        label: "Ejecución de servicios",
-        action: () => console.log("Ejecución de servicios"),
-      },
-      {
-        label: "Reporte Garantía",
-        action: () => console.log("Reporte Garantía"),
-      },
-      {
-        label: "Materiales utilizados",
-        action: () => console.log("Materiales Utilizados"),
-      },
-      {
-        label: "Encuesta de calidad",
-        action: () => console.log("Encuesta de calidad"),
-      },
-    ],
-  },
-  {
-    label: "KPI",
-    action: () => console.log("KPI Clicked"),
-  },
-];
-
 const Dashboard: NextPageWithLayout = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -83,7 +36,7 @@ const Dashboard: NextPageWithLayout = () => {
 };
 
 Dashboard.getLayout = function getLayout(page: ReactElement) {
-  return <DashboardLayout menuItems={menuItems}>{page}</DashboardLayout>;
+  return <DashboardLayout>{page}</DashboardLayout>;
 };
 
 export default Dashboard;
