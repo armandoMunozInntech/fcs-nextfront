@@ -5,6 +5,7 @@ import AlertComp from "@/component/common/alert";
 import { AlertProps } from "@mui/material";
 import { signIn } from "next-auth/react";
 import Loader from "@/component/common/loader";
+import { sha256 } from "js-sha256";
 
 interface LoginValues {
   email: string;
@@ -41,21 +42,21 @@ const Login: React.FC = () => {
     }
 
     try {
-      const result = await signIn("credentials", {
+      const response = await signIn("credentials", {
         email: values.email,
-        password: values.password,
+        password: sha256.hex(values?.password || "").toLocaleUpperCase(),
         redirect: false, // Evita la redirección automática
       });
-      console.log("result", result);
 
       // Si el login falla, mostrar el mensaje de error en la alerta
-      if (result?.error) {
+      if (response?.error) {
         setAlertInfo({
           severity: "error",
           title: "Error",
-          message: result.error || "Error desconocido",
+          message: response.error || "Error desconocido",
         });
         setShowAlert(true);
+        setLoading(false);
       } else {
         router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso
       }
@@ -68,7 +69,6 @@ const Login: React.FC = () => {
       });
       setShowAlert(true);
       setLoading(false);
-    } finally {
     }
   };
 

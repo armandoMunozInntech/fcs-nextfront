@@ -258,13 +258,10 @@ const Header: React.FC<HeaderProps> = ({
               </Grid2>
             )}
           </Grid2>
-          <Grid2>
+          <Grid2 direction="row">
             {/* Información de sesión y bandera */}
             <Box>
-              {!isSmallScreen && session?.user?.name
-                ? session?.user?.name
-                : null}
-              <IconButton
+              <Button
                 size="large"
                 aria-label="account"
                 aria-controls="menu-appbar"
@@ -272,8 +269,13 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={(event) => setMenuAuth(event.currentTarget)}
                 color="inherit"
               >
+                {!isSmallScreen && session?.user?.name ? (
+                  <Typography variant="body1" textTransform="capitalize">
+                    {session?.user?.name.toLocaleLowerCase()} &nbsp;
+                  </Typography>
+                ) : null}
                 <OutputIcon />
-              </IconButton>
+              </Button>
               <Menu
                 id="menu-appbar"
                 anchorEl={menuAuth}
