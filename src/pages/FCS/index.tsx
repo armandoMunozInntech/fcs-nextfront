@@ -1,3 +1,4 @@
+"use client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Typography, Container } from "@mui/material";
@@ -5,6 +6,7 @@ import { ReactElement } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import Loader from "@/component/common/loader";
+import FCSCont from "@/container/FCS/FCSCont";
 
 interface MenuItemProps {
   label: string;
@@ -12,7 +14,7 @@ interface MenuItemProps {
   action?: () => void; // Acción directa si no tiene submenús
 }
 
-const Dashboard: NextPageWithLayout = () => {
+const FCS: NextPageWithLayout = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   if (status === "loading") {
@@ -28,16 +30,10 @@ const Dashboard: NextPageWithLayout = () => {
   }
 
   // Si hay sesión, muestra la página del dashboard
-  return (
-    <Container sx={{ mt: 4, minWidth: "100%" }}>
-      <Typography variant="h4" gutterBottom>
-        Formatos y folios
-      </Typography>
-    </Container>
-  );
+  return <FCSCont />;
 };
 
-Dashboard.getLayout = function getLayout(page: ReactElement) {
+FCS.getLayout = function getLayout(page: ReactElement) {
   const router = useRouter();
   const menuItems: MenuItemProps[] = [
     {
@@ -85,4 +81,4 @@ Dashboard.getLayout = function getLayout(page: ReactElement) {
   return <DashboardLayout menuItems={menuItems}>{page}</DashboardLayout>;
 };
 
-export default Dashboard;
+export default FCS;
