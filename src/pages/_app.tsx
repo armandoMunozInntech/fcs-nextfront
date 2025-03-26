@@ -7,6 +7,8 @@ import localFont from "next/font/local";
 import { SessionProvider } from "next-auth/react";
 import { ReactElement, ReactNode } from "react";
 import { NextPage } from "next";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const calibre = localFont({
   src: [
@@ -49,20 +51,26 @@ const MyApp = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
-        {getLayout(
-          <>
-            <Head>
-              <meta
-                name="viewport"
-                content="initial-scale=1, width=device-width"
-              />
-              <link rel="icon" href="/logo_vertiv_principal.png" sizes="any" />
-              <title>FCS</title>
-            </Head>
-            <CssBaseline />
-            <Component {...pageProps} className={calibre.className} />
-          </>
-        )}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          {getLayout(
+            <>
+              <Head>
+                <meta
+                  name="viewport"
+                  content="initial-scale=1, width=device-width"
+                />
+                <link
+                  rel="icon"
+                  href="/logo_vertiv_principal.png"
+                  sizes="any"
+                />
+                <title>FCS</title>
+              </Head>
+              <CssBaseline />
+              <Component {...pageProps} className={calibre.className} />
+            </>
+          )}
+        </LocalizationProvider>
       </ThemeProvider>
     </SessionProvider>
   );

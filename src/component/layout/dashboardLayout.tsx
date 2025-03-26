@@ -33,7 +33,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [open, setOpen] = useState(isSmallScreen);
+  const [open, setOpen] = useState(!!!isSmallScreen);
   const [selectedFlag, setSelectedFlag] = useState("mexico"); // México como predeterminado
   const drawerWidth = isSmallScreen ? "100%" : 240;
 

@@ -15,7 +15,6 @@
     "@mui/icons-material": "^6.4.8",
     "@mui/material": "^6.4.7",
     "@mui/x-date-pickers": "^7.28.0",
-    "@mui/x-date-pickers-pro": "^7.28.0",
     "axios": "^1.8.2",
     "cookie": "^1.0.2",
     "dayjs": "^1.11.13",
