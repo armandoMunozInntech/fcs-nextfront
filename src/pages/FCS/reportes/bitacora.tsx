@@ -8,7 +8,7 @@ import Loader from "@/component/common/loader";
 import FCSCont from "@/container/FCS/formatosYFolioCont";
 import TabsLayout from "@/component/layout/LayoutFCS";
 
-const ReenvioEncuesta: NextPageWithLayout = () => {
+const Bitacora: NextPageWithLayout = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   if (status === "loading") {
@@ -27,7 +27,7 @@ const ReenvioEncuesta: NextPageWithLayout = () => {
   return <FCSCont />;
 };
 
-ReenvioEncuesta.getLayout = function getLayout(page: ReactElement) {
+Bitacora.getLayout = function getLayout(page: ReactElement) {
   return (
     <DashboardLayout>
       <TabsLayout>{page}</TabsLayout>
@@ -35,4 +35,4 @@ ReenvioEncuesta.getLayout = function getLayout(page: ReactElement) {
   );
 };
 
-export default ReenvioEncuesta;
+export default Bitacora;

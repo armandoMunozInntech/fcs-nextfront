@@ -12,18 +12,18 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import {
-  Home as HomeIcon,
-  Settings as SettingsIcon,
-  Assignment as TicketsIcon,
-  Mail as MailIcon,
-  ExpandLess,
-  ExpandMore,
-  PhoneIphone,
-} from "@mui/icons-material";
-import { useRouter } from "next/navigation";
+import { Home as HomeIcon, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
-const menuItems = [
+// Define el tipo para los elementos del menú
+type MenuItem = {
+  label: string;
+  icon?: React.ReactNode;
+  link?: string;
+  children?: MenuItem[];
+};
+
+const menuItems: MenuItem[] = [
   {
     label: "FCS",
     icon: <HomeIcon />,
@@ -33,74 +33,39 @@ const menuItems = [
         link: "/FCS",
         children: [
           { label: "Formatos y Folios", link: "/FCS/formatos-folios" },
-          { label: "Reenvio Encuesta", link: "/FCS/Reenvio-encuesta" },
+          { label: "Reenvio Encuesta", link: "/FCS/reenvio-encuesta" },
           {
             label: "Reporte",
             children: [
               {
                 label: "Bitacora de usuarios",
-                link: "/FCS/Reportes/Bitacora",
+                link: "/FCS/reportes/bitacora",
               },
               {
                 label: "Reporte Bestel",
-                link: "/FCS/Reportes/Bestel",
+                link: "/FCS/reportes/Bestel",
               },
               {
                 label: "Ejecución de servicios",
-                link: "/FCS/Reportes/Ejecucion-servicios",
+                link: "/FCS/reportes/Ejecucion-servicios",
               },
               {
                 label: "Reporte Garantía",
-                link: "/FCS/Reportes/Reporte-garantia",
+                link: "/FCS/reportes/Reporte-garantia",
               },
               {
                 label: "Materiales utilizados",
-                link: "/FCS/Reportes/Materiales-utilizados",
+                link: "/FCS/reportes/Materiales-utilizados",
               },
               {
                 label: "Encuesta de calidad",
-                link: "/FCS/Reportes/Encuesta-calidad",
+                link: "/FCS/reportes/Encuesta-calidad",
               },
             ],
           },
         ],
       },
-      { label: "SRC Refacciones", link: "/FCS/SRC-Refacciones" },
-      { label: "Equipos", link: "/FCS/Equipos" },
-      { label: "Clientes", link: "/FCS/Equipos" },
-      { label: "EPP", link: "/FCS/EPP" },
-      { label: "Portal Bestel", link: "/FCS/Portal-Bestel" },
-      { label: "Calendario Actividades", link: "/FCS/Calendario-Actividades" },
     ],
-  },
-  {
-    label: "Configuración",
-    icon: <SettingsIcon />,
-    children: [
-      { label: "Usuarios", link: "/Configuracion/Usuarios" },
-      { label: "Notificaciones", link: "/Configuracion/Notificaciones" },
-      { label: "Datos", link: "/Configuracion/Datos" },
-    ],
-  },
-  {
-    label: "Tickets",
-    icon: <TicketsIcon />,
-    link: "/Tickets",
-  },
-  {
-    label: "VRT Store",
-    icon: <PhoneIphone />,
-    link: "/VRT-Store-upload",
-  },
-  {
-    label: "Reenvio Correos",
-    icon: <MailIcon />,
-    link: "/Reenvio-correos",
-  },
-  {
-    label: "VRT Store 2",
-    icon: <PhoneIphone />,
-    link: "/VRT-Store-download",
   },
 ];
 
@@ -114,6 +79,11 @@ const MenuLeft: React.FC<MenuLeftProps> = ({ setClose }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [openSubMenus, setOpenSubMenus] = React.useState<string[]>([]);
 
+  // Función para determinar si una ruta está activa
+  const isActive = (link?: string) =>
+    link ? router.pathname.startsWith(link) : false;
+
+  // Función para alternar submenús
   const handleToggle = (label: string) => {
     setOpenSubMenus((prev) =>
       prev.includes(label)
@@ -122,7 +92,8 @@ const MenuLeft: React.FC<MenuLeftProps> = ({ setClose }) => {
     );
   };
 
-  const renderMenuItems = (items: typeof menuItems, level = 0) =>
+  // Renderizar elementos del menú
+  const renderMenuItems = (items: MenuItem[], level = 0) =>
     items.map((item) => (
       <React.Fragment key={item.label}>
         <ListItem disablePadding>
@@ -135,7 +106,15 @@ const MenuLeft: React.FC<MenuLeftProps> = ({ setClose }) => {
                 router.push(item.link);
               }
             }}
-            sx={{ pl: level * 2 }}
+            sx={{
+              pl: level * 2,
+              backgroundColor: isActive(item.link)
+                ? "rgba(244, 98, 0, 0.3)"
+                : "transparent",
+              "&:hover": {
+                backgroundColor: "rgba(244, 98, 0, 0.1)",
+              },
+            }}
           >
             {item.icon && level === 0 && (
               <ListItemIcon>{item.icon}</ListItemIcon>
@@ -156,7 +135,7 @@ const MenuLeft: React.FC<MenuLeftProps> = ({ setClose }) => {
             unmountOnExit
           >
             <List component="div" disablePadding>
-              {renderMenuItems(item?.children, level + 1)}
+              {renderMenuItems(item.children, level + 1)}
             </List>
           </Collapse>
         )}

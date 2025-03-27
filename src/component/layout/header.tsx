@@ -3,8 +3,6 @@ import {
   AppBar,
   Box,
   Button,
-  Collapse,
-  Grid2,
   IconButton,
   Menu,
   MenuItem,
@@ -13,7 +11,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import OutputIcon from "@mui/icons-material/Output";
 import Image from "next/image";
 import flagMexico from "@/assets/images/flag-mexico.png";
@@ -23,7 +20,6 @@ import flagChile from "@/assets/images/flag-chile.png";
 import { signOut, useSession } from "next-auth/react";
 import logoVertiv from "@/assets/logo_vertiv_principal.png";
 import { useRouter } from "next/navigation";
-import { useCloseOnClickOutside } from "@/utils/useCloseOnClickOutside";
 
 interface optionItemProps {
   label: string;
@@ -41,14 +37,15 @@ interface HeaderProps {
   selectedFlag: string;
   menuItems?: MenuItemProps[] | null; // Lista dinámica de menús
   setClose: (value: boolean) => void;
+  title: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
   togglerDrawer,
   setSelectedFlag,
   selectedFlag,
-  menuItems,
   setClose,
+  title,
 }) => {
   const router = useRouter();
   const theme = useTheme();
@@ -56,11 +53,8 @@ const Header: React.FC<HeaderProps> = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [menuAuth, setMenuAuth] = useState<null | HTMLElement>(null);
   const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
-  const [menuDin, setMenuDin] = useState<boolean>(false);
   const openFlagMenu = Boolean(menuFlag);
-  const [menuOptions, setMenuOptions] = useState<optionItemProps[] | null>(
-    null
-  );
+
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleFlagClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,14 +65,6 @@ const Header: React.FC<HeaderProps> = ({
     if (flag) setSelectedFlag(flag);
     setMenuFlag(null);
   };
-
-  const handleMenuDinClick = () => {
-    setMenuDin(!menuDin);
-  };
-  useCloseOnClickOutside(menuRef, () => {
-    setMenuDin(false);
-    setMenuOptions(null);
-  });
 
   const countries = [
     { name: "México", emoji: "mexico" },
@@ -106,79 +92,6 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const menuOptionSM = () => {
-    return (
-      <Collapse in={!!menuOptions} unmountOnExit>
-        <Grid2
-          direction={isSmallScreen ? "column" : "row"}
-          justifyContent="center"
-          sx={{
-            display: "flex",
-            gap: 1,
-            overflowX: "auto",
-            alignItems: "center",
-            maxWidth: { sm: "auto", lg: "100%" },
-          }}
-        >
-          {menuOptions?.map((subItem: optionItemProps, subIndex: number) => (
-            <Grid2 key={subIndex}>
-              <Button
-                variant="text"
-                color="secondary"
-                sx={{
-                  width: "max-content",
-                  borderTop: "solid 1px",
-                  borderRadius: "0px",
-                }}
-                onClick={() => {
-                  subItem.action();
-                  setMenuOptions(null);
-                  setMenuDin(false);
-                }}
-              >
-                {subItem.label}
-              </Button>
-            </Grid2>
-          ))}
-        </Grid2>
-      </Collapse>
-    );
-  };
-
-  const MenuDinamico = () => {
-    return (
-      <Grid2
-        direction="row"
-        justifyContent="center"
-        sx={{
-          display: "flex",
-          gap: 1,
-          overflowX: "auto",
-          alignItems: "center",
-          maxWidth: { sm: "auto", lg: "100%" },
-          mt: 0,
-        }}
-      >
-        {menuItems?.map((item, index) => (
-          <Button
-            key={index}
-            variant="text"
-            color="secondary"
-            sx={{ width: "max-content" }}
-            onClick={() => {
-              setMenuOptions(item.options || null);
-              if (item.action) {
-                item?.action();
-              }
-            }}
-          >
-            {item.label}
-          </Button>
-        ))}
-      </Grid2>
-    );
-  };
-
   return (
     <AppBar
       position="fixed"
@@ -187,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({
         backgroundColor: "white",
         color: "black",
         borderImage:
-          "linear-gradient(to right,#fb9500 25%, #fe5b1b 50%, #b10081 75%, #0000e7 100%) 1",
+          "linear-gradient(to right, #fb9500 25%, #fe5b1b 50%, #b10081 75%, #0000e7 100%) 1",
         borderWidth: "3px",
         borderStyle: "solid",
         borderTop: 0,
@@ -197,24 +110,22 @@ const Header: React.FC<HeaderProps> = ({
       ref={menuRef}
     >
       <Toolbar>
-        <Grid2
-          container
-          direction="row"
+        {/* Botón de menú lateral */}
+        <Box
           sx={{
-            justifyContent: "space-between",
-            alignItems: "stretch",
-            minWidth: "100%",
+            display: "grid",
+            gridRow: "1",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            width: "100%",
           }}
+          alignItems="center"
         >
-          <Grid2
-            direction="row"
-            sx={{
-              justifyContent: "flex-start",
-              width: "fit-content",
-              display: "flex",
-            }}
+          <Box
+            sx={{ gridColumn: "1" }}
+            display="flex"
+            justifyContent="flex-start"
+            alignItems="center"
           >
-            {/* Botón de menú lateral */}
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -225,15 +136,12 @@ const Header: React.FC<HeaderProps> = ({
             >
               <Image src={logoVertiv} alt="chile" width={20} height={20} />
             </IconButton>
-            {/* Título */}
+
             <Typography
               variant="h5"
               component="div"
               sx={{
-                flexGrow: 1,
-                pt: 2,
-                lineHeight: 1,
-                width: "auto",
+                pt: 1,
                 fontWeight: "bold",
                 cursor: "pointer",
               }}
@@ -246,139 +154,86 @@ const Header: React.FC<HeaderProps> = ({
             >
               {isSmallScreen ? "FCS" : "Field Customer Service"}
             </Typography>
-          </Grid2>
-          {menuItems && (
-            <Grid2>
-              {/* Menú dinámico */}
-              {isSmallScreen ? (
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  onClick={handleMenuDinClick}
-                >
-                  <MenuIcon />
-                </IconButton>
-              ) : (
-                <Grid2
-                  direction="row"
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    pt: 1,
-                    overflowX: "auto",
-                    alignItems: "center",
-                    maxWidth: { sm: "auto", lg: "100%" },
-                    mt: 0,
-                  }}
-                >
-                  <MenuDinamico />
-                </Grid2>
-              )}
-            </Grid2>
-          )}
-          <Grid2 direction="row">
-            {/* Información de sesión y bandera */}
-            <Box>
-              <Button
-                size="large"
-                aria-label="account"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={(event) => setMenuAuth(event.currentTarget)}
-                color="inherit"
-              >
-                {!isSmallScreen && session?.user?.name ? (
-                  <Typography variant="body1" textTransform="capitalize">
-                    {session?.user?.name.toLocaleLowerCase()} &nbsp;
-                  </Typography>
-                ) : null}
-                <OutputIcon />
-              </Button>
-              <Menu
-                id="menu-appbar"
-                anchorEl={menuAuth}
-                open={Boolean(menuAuth)}
-                onClose={() => setMenuAuth(null)}
-              >
-                <MenuItem onClick={() => signOut()}>Cerrar Sesión</MenuItem>
-              </Menu>
+          </Box>
+          {/* Título */}
+          <Typography
+            variant={isSmallScreen ? "body1" : "h6"}
+            component="p"
+            color="primary"
+            sx={{
+              gridColumn: "2/3",
+              display: "flex",
+              justifyContent: "center",
+              pt: 1,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+            textTransform="uppercase"
+          >
+            {title}
+          </Typography>
 
-              <Button
-                variant="text"
-                color="secondary"
-                onClick={handleFlagClick}
-                aria-controls={openFlagMenu ? "flag-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={openFlagMenu ? "true" : undefined}
-              >
-                {flagImage()}
-              </Button>
-              <Menu
-                id="flag-menu"
-                anchorEl={menuFlag}
-                open={openFlagMenu}
-                onClose={() => handleFlagClose(null)}
-              >
-                {countries.map((country) => (
-                  <MenuItem
-                    key={country.name}
-                    onClick={() => handleFlagClose(country.emoji)}
-                  >
-                    {country.name}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          </Grid2>
-          {isSmallScreen && (
-            <Grid2
-              size={12}
-              direction={isSmallScreen ? "column" : "row"}
-              sx={{
-                display: "flex",
-                gap: 1,
-                pt: 1,
-                overflowX: "auto",
-                alignItems: "center",
-                maxWidth: { sm: "auto", lg: "100%" },
-              }}
+          {/* Información de sesión y bandera */}
+          <Box
+            sx={{ gridColumn: "3/3" }}
+            display="flex"
+            justifyContent="flex-end"
+          >
+            <Button
+              size="large"
+              aria-label="account"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={(event) => setMenuAuth(event.currentTarget)}
+              color="inherit"
             >
-              <Collapse in={menuDin} unmountOnExit>
-                <Grid2
-                  size={12}
-                  direction="row"
-                  sx={{
-                    display: "flex",
-                    gap: 1,
-                    pt: 1,
-                    overflowX: "auto",
-                    alignItems: "center",
-                  }}
+              {!isSmallScreen && session?.user?.name ? (
+                <Typography
+                  variant="body1"
+                  textTransform="capitalize"
+                  sx={{ pt: 1 }}
                 >
-                  <MenuDinamico />
-                </Grid2>
-              </Collapse>
-            </Grid2>
-          )}
-          {menuOptions && (
-            <Grid2
-              size={12}
-              direction={isSmallScreen ? "column" : "row"}
-              justifyContent="center"
-              sx={{
-                display: "flex",
-                gap: 1,
-                overflowX: "auto",
-                alignItems: "center",
-                maxWidth: { sm: "auto", lg: "100%" },
-              }}
+                  {session?.user?.name.toLocaleLowerCase()} &nbsp;
+                </Typography>
+              ) : null}
+              <OutputIcon />
+            </Button>
+            <Menu
+              id="menu-appbar"
+              anchorEl={menuAuth}
+              open={Boolean(menuAuth)}
+              onClose={() => setMenuAuth(null)}
             >
-              {menuOptionSM()}
-            </Grid2>
-          )}
-        </Grid2>
+              <MenuItem onClick={() => signOut()}>Cerrar Sesión</MenuItem>
+            </Menu>
+
+            <Button
+              variant="text"
+              color="secondary"
+              onClick={handleFlagClick}
+              aria-controls={openFlagMenu ? "flag-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={openFlagMenu ? "true" : undefined}
+            >
+              {flagImage()}
+            </Button>
+            <Menu
+              id="flag-menu"
+              anchorEl={menuFlag}
+              open={openFlagMenu}
+              onClose={() => handleFlagClose(null)}
+            >
+              {countries.map((country) => (
+                <MenuItem
+                  key={country.name}
+                  onClick={() => handleFlagClose(country.emoji)}
+                >
+                  {country.name}
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Box>
       </Toolbar>
     </AppBar>
   );

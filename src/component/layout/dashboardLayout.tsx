@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import {
   Box,
@@ -14,21 +14,63 @@ import {
 import Header from "./header";
 import MenuLeft from "./menuLeft";
 
-interface MenuItemProps {
-  label: string;
-  options?: { label: string; action: () => void }[]; // Opciones internas (submenús)
-  action?: () => void; // Acción directa si no tiene submenús
-}
-
 interface DashboardLayoutProps {
   children: ReactNode;
-  menuItems?: MenuItemProps[];
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
-  children,
-  menuItems,
-}) => {
+type MenuItem = {
+  label: string;
+  icon?: React.ReactNode;
+  link?: string;
+  children?: MenuItem[];
+};
+
+const menuItems: MenuItem[] = [
+  {
+    label: "FCS",
+    children: [
+      {
+        label: "FCS Field Customer",
+        link: "/FCS",
+        children: [
+          { label: "Formatos y Folios", link: "/FCS/formatos-folios" },
+          { label: "Reenvio de Encuesta", link: "/FCS/reenvio-encuesta" },
+          {
+            label: "Reporte",
+            children: [
+              {
+                label: "Bitácora de usuarios",
+                link: "/FCS/reportes/bitacora",
+              },
+              {
+                label: "Reporte Bestel",
+                link: "/FCS/reportes/Bestel",
+              },
+              {
+                label: "Ejecución de servicios",
+                link: "/FCS/reportes/Ejecucion-servicios",
+              },
+              {
+                label: "Reporte Garantía",
+                link: "/FCS/reportes/Reporte-garantia",
+              },
+              {
+                label: "Materiales utilizados",
+                link: "/FCS/reportes/Materiales-utilizados",
+              },
+              {
+                label: "Encuesta de calidad",
+                link: "/FCS/reportes/Encuesta-calidad",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
@@ -58,6 +100,26 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return null;
   }
 
+  const findTitleByPath = (
+    items: MenuItem[],
+    currentPath: string
+  ): string | null => {
+    for (const item of items) {
+      if (item.children) {
+        const childTitle = findTitleByPath(item.children, currentPath);
+        if (childTitle) {
+          return childTitle;
+        }
+      }
+      if (item.link && currentPath.startsWith(item.link)) {
+        return item.label;
+      }
+    }
+    return null;
+  };
+
+  const currentTitle = findTitleByPath(menuItems, router.pathname) || "Inicio";
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -67,6 +129,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         setSelectedFlag={setSelectedFlag}
         menuItems={menuItems}
         setClose={setOpen}
+        title={currentTitle}
       />
       <Collapse
         orientation="horizontal"

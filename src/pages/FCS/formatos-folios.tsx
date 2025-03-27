@@ -5,8 +5,8 @@ import { ReactElement } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import Loader from "@/component/common/loader";
-import FCSCont from "@/container/FCS/FCSCont";
-import TabsLayout from "@/component/FCS/LayoutFCS";
+import FCSCont from "@/container/FCS/formatosYFolioCont";
+import TabsLayout from "@/component/layout/LayoutFCS";
 
 const FormatoFolio: NextPageWithLayout = () => {
   const { data: session, status } = useSession();

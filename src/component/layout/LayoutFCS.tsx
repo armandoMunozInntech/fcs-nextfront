@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Box, Tabs, Tab, Menu, MenuItem } from "@mui/material";
 
 const TABS = [
   { label: "Formatos y folios", path: "/FCS/formatos-folios" },
@@ -33,14 +27,16 @@ const TabsLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const currentPath = router.pathname;
 
+  // Estado para controlar el menú flotante
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    if (TABS[newValue].label === "Reportes") {
-      // Si es el tab de "Reportes", mostramos el menú flotante
-      return;
+    const selectedTab = TABS[newValue];
+
+    if (selectedTab.label === "Reportes") {
+      return; // No navegamos directamente, se maneja por el menú flotante
     }
-    router.push(TABS[newValue].path);
+    router.push(selectedTab.path); // Navegamos a la ruta del tab seleccionado
   };
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -53,12 +49,16 @@ const TabsLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const handleMenuClick = (path: string) => {
     handleCloseMenu();
-    router.push(path);
+    router.push(path); // Navegamos a la ruta seleccionada en el menú
   };
 
-  const currentIndex = TABS.findIndex((tab) =>
-    currentPath.startsWith(tab.path)
-  );
+  // Determinar el tab seleccionado según la ruta actual
+  const currentIndex = TABS.findIndex((tab) => {
+    if (tab.path === "/FCS/reportes") {
+      return currentPath.startsWith("/FCS/reportes"); // Cualquier subruta de reportes pertenece a este tab
+    }
+    return currentPath === tab.path; // Comparar directamente para otras rutas
+  });
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -68,7 +68,11 @@ const TabsLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Tab
             key={tab.path}
             label={tab.label}
-            onClick={tab.label === "Reportes" ? handleOpenMenu : undefined}
+            onClick={
+              tab.label === "Reportes"
+                ? handleOpenMenu // Abrir el menú flotante para "Reportes"
+                : undefined
+            }
           />
         ))}
       </Tabs>

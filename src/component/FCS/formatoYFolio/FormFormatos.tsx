@@ -28,7 +28,7 @@ const validationSchema = yup.object({
 const FormFormatos: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = !useMediaQuery(theme.breakpoints.down("md"));
-  const [moreFilters, setMoreFilters] = useState(false);
+  const [moreFilters, setMoreFilters] = useState(true);
   // Formik para el formulario de Formatos
   const formatosFormik = useFormik({
     initialValues: {
@@ -57,13 +57,13 @@ const FormFormatos: React.FC = () => {
       style={{ padding: 8, marginTop: "10px" }}
     >
       <Box
-        display="grid"
-        gap={1}
-        justifyContent="end"
-        gridTemplateColumns={
-          !isSmallScreen ? "repeat(2, 1fr)" : "repeat(4, 5fr)"
-        }
-        sx={{ width: "100% !important" }}
+        sx={{
+          display: "grid",
+          gap: 1,
+          gridTemplateColumns: !isSmallScreen
+            ? "repeat(2, 1fr)"
+            : "repeat(5, 1fr)",
+        }}
       >
         <DatePicker
           label="Fecha Inicial"
@@ -181,9 +181,8 @@ const FormFormatos: React.FC = () => {
           justifyContent="end"
           gap={2}
           sx={{
-            width: "300px",
             height: "40px",
-            gridColumn: !moreFilters ? "5/5" : 3 / 5,
+            gridColumn: "span 2",
           }}
         >
           <Button
