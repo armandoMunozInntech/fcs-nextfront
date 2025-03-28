@@ -12,7 +12,12 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { Home as HomeIcon, ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+  Home as HomeIcon,
+  ExpandLess,
+  ExpandMore,
+  Task,
+} from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 // Define el tipo para los elementos del menú
@@ -66,6 +71,11 @@ const menuItems: MenuItem[] = [
         ],
       },
     ],
+  },
+  {
+    label: "Tickets",
+    icon: <Task />,
+    link: "/tickets",
   },
 ];
 

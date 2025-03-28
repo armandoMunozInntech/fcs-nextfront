@@ -20,6 +20,7 @@ import flagChile from "@/assets/images/flag-chile.png";
 import { signOut, useSession } from "next-auth/react";
 import logoVertiv from "@/assets/logo_vertiv_principal.png";
 import { useRouter } from "next/navigation";
+import { LightMode, ModeNight } from "@mui/icons-material";
 
 interface optionItemProps {
   label: string;
@@ -38,6 +39,8 @@ interface HeaderProps {
   menuItems?: MenuItemProps[] | null; // Lista dinámica de menús
   setClose: (value: boolean) => void;
   title: string;
+  toggleDarkMode: () => void;
+  darkMode: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -46,6 +49,8 @@ const Header: React.FC<HeaderProps> = ({
   selectedFlag,
   setClose,
   title,
+  toggleDarkMode,
+  darkMode,
 }) => {
   const router = useRouter();
   const theme = useTheme();
@@ -95,18 +100,26 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <AppBar
       position="fixed"
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor: "white",
-        color: "black",
-        borderImage:
-          "linear-gradient(to right, #fb9500 25%, #fe5b1b 50%, #b10081 75%, #0000e7 100%) 1",
-        borderWidth: "3px",
-        borderStyle: "solid",
-        borderTop: 0,
-        borderLeft: 0,
-        borderRight: 0,
-      }}
+      color="secondary"
+      sx={[
+        () => ({
+          color: "#000000",
+          backgroundColor: "white",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          borderImage:
+            "linear-gradient(to right, #fb9500 25%, #fe5b1b 50%, #b10081 75%, #0000e7 100%) 1",
+          borderWidth: "3px",
+          borderStyle: "solid",
+          borderTop: 0,
+          borderLeft: 0,
+          borderRight: 0,
+        }),
+        (theme) =>
+          theme.applyStyles("dark", {
+            backgroundColor: "black",
+            color: "white",
+          }),
+      ]}
       ref={menuRef}
     >
       <Toolbar>
@@ -140,6 +153,7 @@ const Header: React.FC<HeaderProps> = ({
             <Typography
               variant="h5"
               component="div"
+              color="secondary"
               sx={{
                 pt: 1,
                 fontWeight: "bold",
@@ -232,6 +246,9 @@ const Header: React.FC<HeaderProps> = ({
                 </MenuItem>
               ))}
             </Menu>
+            <IconButton color="secondary" onClick={() => toggleDarkMode()}>
+              {darkMode ? <LightMode /> : <ModeNight />}
+            </IconButton>
           </Box>
         </Box>
       </Toolbar>

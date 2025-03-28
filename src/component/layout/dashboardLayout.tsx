@@ -10,9 +10,11 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
+  ThemeProvider,
 } from "@mui/material";
 import Header from "./header";
 import MenuLeft from "./menuLeft";
+import { lightTheme, darkTheme } from "@/styles/theme";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -68,6 +70,10 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+  {
+    label: "Tickets",
+    link: "/tickets",
+  },
 ];
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
@@ -78,9 +84,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [open, setOpen] = useState(!!!isSmallScreen);
   const [selectedFlag, setSelectedFlag] = useState("mexico"); // México como predeterminado
   const drawerWidth = isSmallScreen ? "100%" : 240;
+  const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const togglerDrawer = () => {
     setOpen(!open);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
   };
 
   // Mientras se carga la sesión
@@ -121,44 +132,48 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const currentTitle = findTitleByPath(menuItems, router.pathname) || "Inicio";
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <Header
-        togglerDrawer={togglerDrawer}
-        selectedFlag={selectedFlag}
-        setSelectedFlag={setSelectedFlag}
-        menuItems={menuItems}
-        setClose={setOpen}
-        title={currentTitle}
-      />
-      <Collapse
-        orientation="horizontal"
-        in={open}
-        sx={{
-          transition: "ease-out",
-        }}
-      >
-        <Drawer
-          variant="persistent"
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <Header
+          togglerDrawer={togglerDrawer}
+          selectedFlag={selectedFlag}
+          setSelectedFlag={setSelectedFlag}
+          menuItems={menuItems}
+          setClose={setOpen}
+          title={currentTitle}
+          toggleDarkMode={toggleDarkMode}
+          darkMode={darkMode}
+        />
+        <Collapse
+          orientation="horizontal"
+          in={open}
           sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              transition: "ease-out",
-            },
+            transition: "ease-out",
           }}
-          open={open}
         >
-          <MenuLeft setClose={setOpen} />
-        </Drawer>
-      </Collapse>
-      <Box component="main" sx={{ flexGrow: 1, mt: 8 }}>
-        {/* <Toolbar /> */}
-        {children}
+          <Drawer
+            variant="persistent"
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              [`& .MuiDrawer-paper`]: {
+                width: drawerWidth,
+                boxSizing: "border-box",
+                transition: "ease-out",
+                borderRight: "1px solid rgba(0, 0, 0, 0.6)",
+              },
+            }}
+            open={open}
+          >
+            <MenuLeft setClose={setOpen} />
+          </Drawer>
+        </Collapse>
+        <Box component="main" sx={{ flexGrow: 1, mt: 8 }}>
+          {children}
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 };
 

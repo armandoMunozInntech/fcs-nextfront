@@ -5,10 +5,9 @@ import { ReactElement } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import Loader from "@/component/common/loader";
-import FormatosYFoliosCont from "@/container/FCS/formatosYFolioCont";
-import TabsLayout from "@/component/layout/LayoutFCS";
+import TicketsCont from "@/container/ticketsCont";
 
-const FormatoFolio: NextPageWithLayout = () => {
+const Tickets: NextPageWithLayout = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   if (status === "loading") {
@@ -24,15 +23,11 @@ const FormatoFolio: NextPageWithLayout = () => {
   }
 
   // Si hay sesión, muestra la página del dashboard
-  return <FormatosYFoliosCont />;
+  return <TicketsCont />;
 };
 
-FormatoFolio.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <DashboardLayout >
-      <TabsLayout>{page}</TabsLayout>
-    </DashboardLayout>
-  );
+Tickets.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-export default FormatoFolio;
+export default Tickets;

@@ -61,9 +61,13 @@ const TabsLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   });
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{}}>
       {/* Tabs principales */}
-      <Tabs value={currentIndex} onChange={handleTabChange}>
+      <Tabs
+        value={currentIndex}
+        onChange={handleTabChange}
+        sx={{ overflowX: "auto" }}
+      >
         {TABS.map((tab) => (
           <Tab
             key={tab.path}
