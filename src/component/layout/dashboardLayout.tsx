@@ -11,6 +11,7 @@ import {
   useTheme,
   useMediaQuery,
   ThemeProvider,
+  Toolbar,
 } from "@mui/material";
 import Header from "./header";
 import MenuLeft from "./menuLeft";
@@ -133,7 +134,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", height: "100vh" }}>
         <CssBaseline />
         <Header
           togglerDrawer={togglerDrawer}
@@ -169,7 +170,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <MenuLeft setClose={setOpen} />
           </Drawer>
         </Collapse>
-        <Box component="main" sx={{ flexGrow: 1, mt: 8 }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            width: open
+              ? isSmallScreen
+                ? "0"
+                : `calc(100% - ${drawerWidth}px)`
+              : "100%",
+            display: open && isSmallScreen ? "none" : "block",
+            transition: "width 0.3s ease-out",
+          }}
+        >
+          <Toolbar />
           {children}
         </Box>
       </Box>

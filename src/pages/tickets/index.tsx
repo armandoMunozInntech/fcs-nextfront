@@ -5,7 +5,7 @@ import { ReactElement } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import Loader from "@/component/common/loader";
-import TicketsCont from "@/container/ticketsCont";
+import TicketsCont from "@/container/tickets/ticketsCont";
 
 const Tickets: NextPageWithLayout = () => {
   const { data: session, status } = useSession();

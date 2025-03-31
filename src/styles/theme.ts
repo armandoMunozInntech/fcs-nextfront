@@ -5,6 +5,7 @@ export const lightTheme = createTheme({
     mode: "light",
     primary: { main: "#fe5b1b", contrastText: "#ffffff" },
     secondary: { main: "#000000", contrastText: "#ffffff" },
+    info: { main: "#0000E7", contrastText: "#ffffff" },
   },
   typography: { fontFamily: "Calibre, Arial, sans-serif" },
 });
@@ -14,6 +15,7 @@ export const darkTheme = createTheme({
     mode: "dark",
     primary: { main: "#fe5b1b", contrastText: "#ffffff" },
     secondary: { main: "#ffffff", contrastText: "#000000" },
+    info: { main: "#0000E7", contrastText: "#ffffff" },
   },
   typography: { fontFamily: "Calibre, Arial, sans-serif" },
 });
