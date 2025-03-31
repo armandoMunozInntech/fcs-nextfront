@@ -16,74 +16,75 @@ import {
 } from "@mui/material";
 import { Search, Visibility } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-
+import dayjs from "dayjs";
 interface Ticket {
-  noTicket: string;
-  cliente: string;
-  sitio: string;
-  categoria: string;
-  contacto: string;
-  encargado: string;
-  estatus: string;
-  fechaAlta: string;
-  fechaEstimadaTermino: string;
-  fechaConfirmadaTermino: string;
-  proceso: string;
+  id: number;
+  ticket: string;
+  status: string;
+  site: string;
+  client: string;
+  serial: string;
+  cause: string;
+  type_service: string | "";
+  registration_date: string | Date; // Puede ser un string o un Date
 }
 
 const rows: Ticket[] = [
   {
-    noTicket: "CL-000015",
-    cliente: "SOLUTION BOX",
-    sitio: "CDMX",
-    categoria: "MANTENIMIENTO PREVENTIVO",
-    contacto: "CARLOS APARICIO",
-    encargado: "BANDA RETAMAL CLAUDIO ANDRES",
-    estatus: "CANCELADO",
-    fechaAlta: "02/01/2025",
-    fechaEstimadaTermino: "30/01/2025",
-    fechaConfirmadaTermino: "N/A",
-    proceso: "Solicitud en proceso",
+    id: 1,
+    ticket: "MX10001",
+    status: "ABIERTO",
+    client: "ACCIONA SERVICIOS URBANOS Y MEDIOAMBIENTALES MEXICO",
+    site: "OTRO",
+    serial: "NMZ1020304050",
+    cause: "CLIENTE",
+    type_service: null,
+    registration_date: "2025-03-31T00:00:00",
   },
   {
-    noTicket: "CL-000016",
-    cliente: "bSOLUTION BOX",
-    sitio: "CDMX",
-    categoria: "MANTENIMIENTO PREVENTIVO",
-    contacto: "CARLOS APARICIO",
-    encargado: "BANDA RETAMAL CLAUDIO ANDRES",
-    estatus: "CANCELADO",
-    fechaAlta: "02/01/2025",
-    fechaEstimadaTermino: "30/01/2025",
-    fechaConfirmadaTermino: "N/A",
-    proceso: "Solicitud en proceso",
+    id: 2,
+    ticket: "NA10002",
+    status: "ABIERTO",
+    client: "CLIENTE DE PRUEBA SA DE CV",
+    site: "OTRO",
+    serial: "8yxd47s",
+    cause: "Cliente",
+    type_service: null,
+    registration_date: "2025-03-31T11:41:03.967",
   },
   {
-    noTicket: "CL-000017",
-    cliente: "cSOLUTION BOX",
-    sitio: "CDMX",
-    categoria: "MANTENIMIENTO PREVENTIVO",
-    contacto: "CARLOS APARICIO",
-    encargado: "BANDA RETAMAL CLAUDIO ANDRES",
-    estatus: "CANCELADO",
-    fechaAlta: "02/01/2025",
-    fechaEstimadaTermino: "30/01/2025",
-    fechaConfirmadaTermino: "N/A",
-    proceso: "Solicitud en proceso",
+    id: 3,
+    ticket: "NA10003",
+    status: "ABIERTO",
+    client: "ACCIONA SERVICIOS URBANOS Y MEDIOAMBIENTALES MEXICO",
+    site: "Otro",
+    serial: "ehehe",
+    cause: "Vertiv",
+    type_service: null,
+    registration_date: "2025-03-31T12:03:47.073",
+  },
+  {
+    id: 4,
+    ticket: "NA10004",
+    status: "ABIERTO",
+    client: "VERTIV",
+    site: "Otro",
+    serial: "x75d36s64",
+    cause: "Cliente",
+    type_service: "Servicio Puntual (205)",
+    registration_date: "2025-03-31T12:47:13.44",
   },
 ];
 
 const columnHeaders = [
-  { id: "noTicket", label: "No. ticket", stickyLeft: true },
-  { id: "cliente", label: "Cliente" },
-  { id: "sitio", label: "Sitio" },
-  { id: "categoria", label: "Categoría" },
-  { id: "contacto", label: "Contacto" },
-  { id: "encargado", label: "Encargado" },
-  { id: "estatus", label: "Estatus" },
-  { id: "fechaAlta", label: "Fecha Alta" },
-  { id: "fechaEstimadaTermino", label: "Fecha estimada término" },
-  { id: "fechaConfirmadaTermino", label: "Fecha confirmada término" },
+  { id: "ticket", label: "No. ticket", stickyLeft: true },
+  { id: "status", label: "Estatus" },
+  { id: "client", label: "Cliente" },
+  { id: "site", label: "Sitio" },
+  { id: "serial", label: "No. de Serie" },
+  { id: "causa", label: "Causa" },
+  { id: "type_service", label: "Tipo de servicio" },
+  { id: "registration_date", label: "Fecha Alta" },
   { id: "proceso", label: "Proceso", stickyRight: true },
 ];
 
@@ -92,7 +93,7 @@ const MainTable: React.FC = () => {
   const [search, setSearch] = useState<string>("");
   const [filteredRows, setFilteredRows] = useState<Ticket[]>(rows);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<keyof Ticket>("noTicket");
+  const [orderBy, setOrderBy] = useState<keyof Ticket>("ticket");
 
   // Maneja la búsqueda
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,9 +158,6 @@ const MainTable: React.FC = () => {
           sx={{ pt: 2, textAlign: "end" }}
           justifyContent="end"
         >
-          <Button variant="contained" color="primary" sx={{ mr: 2 }}>
-            Nuevo Ticket
-          </Button>
           <Button variant="contained" color="secondary">
             Exportar XLS
           </Button>
@@ -207,7 +205,7 @@ const MainTable: React.FC = () => {
           </TableHead>
           <TableBody>
             {sortedRows.map((row) => (
-              <TableRow key={row.noTicket}>
+              <TableRow key={row.id}>
                 {columnHeaders.map((column) => (
                   <TableCell
                     key={column.id}
@@ -222,7 +220,9 @@ const MainTable: React.FC = () => {
                       zIndex: column.stickyLeft || column.stickyRight ? 1 : 0,
                     }}
                   >
-                    {row[column.id as keyof Ticket]}
+                    {column.id === "registration_date" && row[column.id]
+                      ? dayjs(row.registration_date).format("DD / MM / YYYY") // Formatea la fecha
+                      : row[column.id] || ""}
                   </TableCell>
                 ))}
                 <TableCell
@@ -234,9 +234,7 @@ const MainTable: React.FC = () => {
                 >
                   <IconButton
                     color="secondary"
-                    onClick={() =>
-                      router.push(`/tickets/detalle/${row.noTicket}`)
-                    }
+                    onClick={() => router.push(`/tickets/detalle/${row.id}`)}
                   >
                     <Visibility />
                   </IconButton>
