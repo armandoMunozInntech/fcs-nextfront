@@ -4,7 +4,6 @@ import Head from "next/head";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "@/styles/globals.css";
 import localFont from "next/font/local";
-import { SessionProvider } from "next-auth/react";
 import { ReactElement, ReactNode } from "react";
 import { NextPage } from "next";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -49,30 +48,24 @@ const MyApp = ({
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
   return (
-    <SessionProvider session={session}>
-      <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {getLayout(
-            <>
-              <Head>
-                <meta
-                  name="viewport"
-                  content="initial-scale=1, width=device-width"
-                />
-                <link
-                  rel="icon"
-                  href="/logo_vertiv_principal.png"
-                  sizes="any"
-                />
-                <title>FCS</title>
-              </Head>
-              <CssBaseline />
-              <Component {...pageProps} className={calibre.className} />
-            </>
-          )}
-        </LocalizationProvider>
-      </ThemeProvider>
-    </SessionProvider>
+    <ThemeProvider theme={theme}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {getLayout(
+          <>
+            <Head>
+              <meta
+                name="viewport"
+                content="initial-scale=1, width=device-width"
+              />
+              <link rel="icon" href="/logo_vertiv_principal.png" sizes="any" />
+              <title>FCS</title>
+            </Head>
+            <CssBaseline />
+            <Component {...pageProps} className={calibre.className} />
+          </>
+        )}
+      </LocalizationProvider>
+    </ThemeProvider>
   );
 };
 

@@ -3,9 +3,9 @@ import { useRouter } from "next/router";
 import LoginCont from "@/container/loginCont";
 import AlertComp from "@/component/common/alert";
 import { AlertProps } from "@mui/material";
-import { signIn } from "next-auth/react";
 import Loader from "@/component/common/loader";
 import { sha256 } from "js-sha256";
+import axios from "axios";
 
 interface LoginValues {
   email: string;
@@ -42,11 +42,13 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await signIn("credentials", {
-        email: values.email,
-        password: sha256.hex(values?.password || "").toLocaleUpperCase(),
-        redirect: false, // Evita la redirección automática
-      });
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/login",
+        {
+          email: values.email,
+          password: sha256.hex(values?.password || "").toLocaleUpperCase(),
+        }
+      );
 
       // Si el login falla, mostrar el mensaje de error en la alerta
       if (response?.error) {

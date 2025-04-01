@@ -1,12 +1,11 @@
 import { ReactNode, useState } from "react";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import {
   Box,
   Drawer,
   CssBaseline,
-  Container,
-  CircularProgress,
+  // Container,
+  // CircularProgress,
   Collapse,
   useTheme,
   useMediaQuery,
@@ -81,7 +80,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [open, setOpen] = useState(!!!isSmallScreen);
   const [selectedFlag, setSelectedFlag] = useState("mexico"); // México como predeterminado
   const drawerWidth = isSmallScreen ? "100%" : 240;
@@ -95,22 +93,22 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     setDarkMode((prev) => !prev);
   };
 
-  // Mientras se carga la sesión
-  if (status === "loading") {
-    return (
-      <Container sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
-      </Container>
-    );
-  }
+  // // Mientras se carga la sesión
+  // if (status === "loading") {
+  //   return (
+  //     <Container sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+  //       <CircularProgress />
+  //     </Container>
+  //   );
+  // }
 
-  // Si no hay sesión, redirige al usuario al inicio de sesión
-  if (!session) {
-    if (typeof window !== "undefined") {
-      router.push("/login");
-    }
-    return null;
-  }
+  // // Si no hay sesión, redirige al usuario al inicio de sesión
+  // if (!session) {
+  //   if (typeof window !== "undefined") {
+  //     router.push("/login");
+  //   }
+  //   return null;
+  // }
 
   const findTitleByPath = (
     items: MenuItem[],

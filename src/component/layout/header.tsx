@@ -17,7 +17,6 @@ import flagMexico from "@/assets/images/flag-mexico.png";
 import flagColombia from "@/assets/images/flag-colombia.png";
 import flagArgentina from "@/assets/images/flag-argentina.png";
 import flagChile from "@/assets/images/flag-chile.png";
-import { signOut, useSession } from "next-auth/react";
 import logoVertiv from "@/assets/logo_vertiv_principal.png";
 import { useRouter } from "next/navigation";
 import { LightMode, ModeNight } from "@mui/icons-material";
@@ -54,13 +53,21 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const router = useRouter();
   const theme = useTheme();
-  const { data: session } = useSession();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [menuAuth, setMenuAuth] = useState<null | HTMLElement>(null);
   const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
   const openFlagMenu = Boolean(menuFlag);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const logout = async () => {
+    await fetch("http://localhost:4000/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    router.push("/login");
+  };
 
   const handleFlagClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuFlag(event.currentTarget);
@@ -201,13 +208,13 @@ const Header: React.FC<HeaderProps> = ({
               onClick={(event) => setMenuAuth(event.currentTarget)}
               color="inherit"
             >
-              {!isSmallScreen && session?.user?.name ? (
+              {!isSmallScreen /*&&  session?.user?.name */ ? (
                 <Typography
                   variant="body1"
                   textTransform="capitalize"
                   sx={{ pt: 1 }}
                 >
-                  {session?.user?.name.toLocaleLowerCase()} &nbsp;
+                  {/* {session?.user?.name.toLocaleLowerCase()} &nbsp; */}
                 </Typography>
               ) : null}
               <OutputIcon />
@@ -218,7 +225,13 @@ const Header: React.FC<HeaderProps> = ({
               open={Boolean(menuAuth)}
               onClose={() => setMenuAuth(null)}
             >
-              <MenuItem onClick={() => signOut()}>Cerrar Sesión</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  logout();
+                }}
+              >
+                Cerrar Sesión
+              </MenuItem>
             </Menu>
 
             <Button
