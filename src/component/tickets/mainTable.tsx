@@ -29,53 +29,6 @@ interface Ticket {
   registration_date: string | Date; // Puede ser un string o un Date
 }
 
-const rows: Ticket[] = [
-  {
-    id: 1,
-    ticket: "MX10001",
-    status: "ABIERTO",
-    client: "ACCIONA SERVICIOS URBANOS Y MEDIOAMBIENTALES MEXICO",
-    site: "OTRO",
-    serial: "NMZ1020304050",
-    cause: "CLIENTE",
-    type_service: null,
-    registration_date: "2025-03-31T00:00:00",
-  },
-  {
-    id: 2,
-    ticket: "NA10002",
-    status: "ABIERTO",
-    client: "CLIENTE DE PRUEBA SA DE CV",
-    site: "OTRO",
-    serial: "8yxd47s",
-    cause: "Cliente",
-    type_service: null,
-    registration_date: "2025-03-31T11:41:03.967",
-  },
-  {
-    id: 3,
-    ticket: "NA10003",
-    status: "ABIERTO",
-    client: "ACCIONA SERVICIOS URBANOS Y MEDIOAMBIENTALES MEXICO",
-    site: "Otro",
-    serial: "ehehe",
-    cause: "Vertiv",
-    type_service: null,
-    registration_date: "2025-03-31T12:03:47.073",
-  },
-  {
-    id: 4,
-    ticket: "NA10004",
-    status: "ABIERTO",
-    client: "VERTIV",
-    site: "Otro",
-    serial: "x75d36s64",
-    cause: "Cliente",
-    type_service: "Servicio Puntual (205)",
-    registration_date: "2025-03-31T12:47:13.44",
-  },
-];
-
 const columnHeaders = [
   { id: "ticket", label: "No. ticket", stickyLeft: true },
   { id: "status", label: "Estatus" },
@@ -88,12 +41,14 @@ const columnHeaders = [
   { id: "proceso", label: "Proceso", stickyRight: true },
 ];
 
-const MainTable: React.FC = () => {
+const MainTable: React.FC<{ dataTickets: Ticket[] }> = ({ dataTickets }) => {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
-  const [filteredRows, setFilteredRows] = useState<Ticket[]>(rows);
+  const [filteredRows, setFilteredRows] = useState<Ticket[]>(dataTickets);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<keyof Ticket>("ticket");
+
+  const rows: Ticket[] = dataTickets; // Se usa el spread operator para asegurarse de que es un array válido
 
   // Maneja la búsqueda
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +71,7 @@ const MainTable: React.FC = () => {
   };
 
   // Función para ordenar los datos
-  const sortedRows = [...filteredRows].sort((a, b) => {
+  const sortedRows = [...filteredRows]?.sort((a, b) => {
     const valueA = a[orderBy];
     const valueB = b[orderBy];
 
@@ -221,7 +176,7 @@ const MainTable: React.FC = () => {
                     }}
                   >
                     {column.id === "registration_date" && row[column.id]
-                      ? dayjs(row.registration_date).format("DD / MM / YYYY") // Formatea la fecha
+                      ? dayjs(row.registration_date).format("DD/MM/YYYY") // Formatea la fecha
                       : row[column.id] || ""}
                   </TableCell>
                 ))}

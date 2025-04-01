@@ -42,26 +42,12 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/login",
-        {
-          email: values.email,
-          password: sha256.hex(values?.password || "").toLocaleUpperCase(),
-        }
-      );
+      await axios.post("http://localhost:4000/api/auth/login", {
+        email: values.email,
+        password: sha256.hex(values?.password || "").toLocaleUpperCase(),
+      });
 
-      // Si el login falla, mostrar el mensaje de error en la alerta
-      if (response?.error) {
-        setAlertInfo({
-          severity: "error",
-          title: "Error",
-          message: response.error || "Error desconocido",
-        });
-        setShowAlert(true);
-        setLoading(false);
-      } else {
-        router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso
-      }
+      router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso
     } catch (error) {
       console.error("Error during login:", error);
       setAlertInfo({

@@ -2,7 +2,7 @@ import express from "express";
 import next from "next";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
-// import ticketsRoutes from "./routes/tickets.js";
+import ticketsRoutes from "./routes/tickets.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -25,7 +25,7 @@ app.prepare().then(() => {
 
   // Usar rutas definidas
   server.use("/api/auth", authRoutes);
-  // server.use("/api/tickets", ticketsRoutes);
+  server.use("/api/tickets", ticketsRoutes);
 
   // Manejar todas las demás rutas con Next.js
   server.all("*", (req, res) => {

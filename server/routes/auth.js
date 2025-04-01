@@ -91,14 +91,12 @@ router.post("/logout", (req, res) => {
 // 🚀 **Ruta para obtener los datos del usuario desde la cookie**
 router.get("/me", (req, res) => {
   const cookies = req.headers.cookie ? parse(req.headers.cookie) : {};
-  console.log("cookies server", cookies);
 
   const authData = cookies.authData ? JSON.parse(cookies.authData) : null;
 
   if (!authData || !authData.user) {
     return res.status(401).json({ message: "No autenticado" });
   }
-  console.log("me", res.json(authData.user));
 
   return res.json(authData.user);
 });
