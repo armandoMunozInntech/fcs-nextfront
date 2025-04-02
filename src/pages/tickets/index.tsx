@@ -17,6 +17,7 @@ interface AlertCompProps {
   message: string;
 }
 
+
 const Tickets: NextPageWithLayout = () => {
   const [dataTickets, setDataTickets] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +47,6 @@ const Tickets: NextPageWithLayout = () => {
         "http://localhost:4000/api/tickets/ticketsList"
       );
       setDataTickets(response.data);
-      console.log("resTickets", response.data);
       setAlertInfo({
         severity: "success",
         title: "Exito: ",

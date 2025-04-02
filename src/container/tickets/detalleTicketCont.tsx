@@ -3,7 +3,32 @@ import DetalleTicket from "@/component/tickets/detalleTicket";
 import { Grid2, Paper } from "@mui/material";
 import React from "react";
 
-const DetalleTicketCont: React.FC = () => {
+interface Ticket {
+  coordinator: string;
+  category_cause: string;
+  subcategory_cause: string;
+  actions_history: ActionHistory[];
+  serial_history: any[]; // Puedes definirlo mejor si sabes qué datos lleva
+  id: number;
+  ticket: string;
+  status: string;
+  client: string;
+  site: string;
+  serial: string;
+  cause: string;
+  type_service: string | null;
+  registration_date: string;
+}
+
+interface ActionHistory {
+  usuario: string;
+  estsatus: string; // Parece un error de escritura, debería ser "estatus"?
+  fecha: string;
+  comentario: string;
+}
+const DetalleTicketCont: React.FC<{ dataDetalleTicket: Ticket }> = ({
+  dataDetalleTicket,
+}) => {
   return (
     <Grid2
       container
@@ -20,7 +45,7 @@ const DetalleTicketCont: React.FC = () => {
         <Grid2 container sx={{ alignItems: "center" }}>
           <Grid2 size={12}>
             <Paper sx={{ p: 2 }} elevation={3}>
-              <DetalleTicket />
+              <DetalleTicket dataDetalleTicket={dataDetalleTicket} />
             </Paper>
           </Grid2>
         </Grid2>
