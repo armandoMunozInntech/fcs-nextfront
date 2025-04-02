@@ -1,13 +1,24 @@
 import React from "react";
-import { Divider, Grid2, Typography } from "@mui/material";
+import {
+  Divider,
+  Grid2,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 
 interface DetalleTicketProp {
   coordinator: string;
   category_cause: string;
   subcategory_cause: string;
-  actions_history: ActionHistory[];
-  serial_history: any[]; // Puedes definirlo mejor si sabes qué datos lleva
+  actions_history: ActionHistory[] | null;
+  serial_history: SerialHistoryProps[] | null;
   id: number;
   ticket: string;
   status: string;
@@ -18,10 +29,15 @@ interface DetalleTicketProp {
   type_service: string | null;
   registration_date: string;
 }
+interface SerialHistoryProps {
+  serie: string;
+  folio: string;
+  fecha: string;
+}
 
 interface ActionHistory {
   usuario: string;
-  estsatus: string; // Parece un error de escritura, debería ser "estatus"?
+  estatus: string; // Parece un error de escritura, debería ser "estatus"?
   fecha: string;
   comentario: string;
 }
@@ -34,7 +50,15 @@ const DetalleTicket: React.FC<{
   return (
     <Grid2 container justifyContent="center" width="100%">
       <Grid2 justifyContent="center" size={12}>
-        <Typography variant="body1" color="error" sx={{ textAlign: "center" }}>
+        <Typography
+          variant="body1"
+          color={
+            dataDetalleTicket?.status.toLocaleLowerCase() === "cerrado"
+              ? "error"
+              : "success"
+          }
+          sx={{ textAlign: "center" }}
+        >
           {dataDetalleTicket?.status}
         </Typography>
         <Typography variant="h6" sx={{ textAlign: "center" }}>
@@ -79,10 +103,62 @@ const DetalleTicket: React.FC<{
           {dataDetalleTicket?.subcategory_cause}
         </Typography>
       </Grid2>
-      <Grid2 size={12}>
-        <Divider />
-      </Grid2>
-      <Grid2 size={12} sx={{ pt: 1 }}></Grid2>
+      {dataDetalleTicket?.serial_history?.length !== 0 && (
+        <>
+          <Grid2 size={12}>
+            <Divider />
+          </Grid2>
+          <Grid2 size={12} sx={{ pt: 1 }}>
+            <Typography variant="body2">Servicios Realizados:</Typography>
+            <TableContainer component={Paper}>
+              <Table size="small" aria-label="a dense table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      sx={{
+                        backgroundColor: "black",
+                        color: "white !important",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      No. de Serie
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor: "black",
+                        color: "white !important",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      No. de Folio
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor: "black",
+                        color: "white !important",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Fecha
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dataDetalleTicket?.serial_history?.map((row) => (
+                    <TableRow key={row.serie}>
+                      <TableCell>{row.serie}</TableCell>
+                      <TableCell>{row.folio}</TableCell>
+                      <TableCell>
+                        {dayjs(row.fecha).format("DD/MM/YYYY")}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid2>
+        </>
+      )}
     </Grid2>
   );
 };

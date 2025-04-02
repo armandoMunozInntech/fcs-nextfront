@@ -2,6 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:3000", // Cambia por tu URL base
+  withCredentials: true,
 });
 
 // Interceptor para mostrar el loader al iniciar una solicitud

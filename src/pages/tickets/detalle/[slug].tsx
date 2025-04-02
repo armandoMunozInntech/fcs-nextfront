@@ -23,7 +23,7 @@ interface Ticket {
   category_cause: string;
   subcategory_cause: string;
   actions_history: ActionHistory[];
-  serial_history: any[]; // Puedes definirlo mejor si sabes qué datos lleva
+  serial_history: SerialHistoryProps[];
   id: number;
   ticket: string;
   status: string;
@@ -34,10 +34,15 @@ interface Ticket {
   type_service: string | null;
   registration_date: string;
 }
+interface SerialHistoryProps {
+  serie: string;
+  folio: string;
+  fecha: string;
+}
 
 interface ActionHistory {
   usuario: string;
-  estsatus: string; // Parece un error de escritura, debería ser "estatus"?
+  estatus: string; // Parece un error de escritura, debería ser "estatus"?
   fecha: string;
   comentario: string;
 }
@@ -64,7 +69,6 @@ const DetalleTicket: NextPageWithLayout = () => {
   const getDetalleTicket = async (id: string) => {
     setLoading(true);
 
-
     try {
       const response = await axios.post(
         "http://localhost:4000/api/tickets/detalleTicket",
@@ -89,7 +93,7 @@ const DetalleTicket: NextPageWithLayout = () => {
       });
       setShowAlert(true);
       setLoading(false);
-      return true;
+      return error;
     }
   };
 
