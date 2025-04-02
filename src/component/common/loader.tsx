@@ -10,7 +10,7 @@ const Loader = () => {
         height: "100%",
       }}
     >
-      <CircularProgress />
+      <CircularProgress sx={{ mt: "20%" }} />
     </Container>
   );
 };

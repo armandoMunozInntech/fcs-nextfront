@@ -26,7 +26,7 @@ interface ActionHistory {
   fecha: string;
   comentario: string;
 }
-const DetalleTicketCont: React.FC<{ dataDetalleTicket: Ticket }> = ({
+const DetalleTicketCont: React.FC<{ dataDetalleTicket: Ticket | null }> = ({
   dataDetalleTicket,
 }) => {
   return (
@@ -39,6 +39,7 @@ const DetalleTicketCont: React.FC<{ dataDetalleTicket: Ticket }> = ({
         justifyContent: "space-between",
         alignItems: "stretch",
         backgroundColor: "#cfcfcf",
+        height:'100%'
       }}
     >
       <Grid2 size={5}>

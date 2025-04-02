@@ -1,10 +1,8 @@
 "use client";
 
-// import { useRouter } from "next/router";
 import React, { ReactElement, useEffect, useState } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
-// import Loader from "@/component/common/loader";
 import TicketsCont from "@/container/tickets/ticketsCont";
 import axios from "axios";
 import { AlertProps } from "@mui/material";
@@ -20,7 +18,7 @@ interface AlertCompProps {
 
 const Tickets: NextPageWithLayout = () => {
   const [dataTickets, setDataTickets] = useState([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<AlertCompProps>({
     severity: "success",

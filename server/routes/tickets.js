@@ -27,16 +27,14 @@ router.post("/ticketsList", async (req, res) => {
 
 router.post("/detalleTicket", async (req, res) => {
   const { id } = req.body;
-  const idbody = id;
-  try {
-    const response = await axios({
-      method: "get",
-      url: "http://test.vrt-fcs.com/api_migracion/tracking/buscar_ticket",
-      params: { id: idbody }, // 👈 Pasamos el ID como query params
-    });
-    console.log("id", response.data.args);
 
-    return res.status(200).json(response?.data);
+  try {
+    const response = await axios.get(
+      "http://test.vrt-fcs.com/api_migracion/tracking/buscar_ticket",
+      { params: { id } }
+    );
+
+    return res.status(200).json(response?.data?.data[0]);
   } catch (error) {
     if (isAxiosError(error)) {
       console.error("🚨 Error API:", error.response?.data || error.message);

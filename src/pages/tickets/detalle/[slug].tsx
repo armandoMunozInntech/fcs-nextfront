@@ -9,6 +9,8 @@ import DetalleTicketCont from "@/container/tickets/detalleTicketCont";
 import axios from "axios";
 import { AlertProps } from "@mui/material";
 import { useRouter } from "next/router";
+import AlertComp from "@/component/common/alert";
+import Loader from "@/component/common/loader";
 
 interface AlertCompProps {
   severity: AlertProps["severity"];
@@ -16,10 +18,34 @@ interface AlertCompProps {
   message: string;
 }
 
+interface Ticket {
+  coordinator: string;
+  category_cause: string;
+  subcategory_cause: string;
+  actions_history: ActionHistory[];
+  serial_history: any[]; // Puedes definirlo mejor si sabes qué datos lleva
+  id: number;
+  ticket: string;
+  status: string;
+  client: string;
+  site: string;
+  serial: string;
+  cause: string;
+  type_service: string | null;
+  registration_date: string;
+}
+
+interface ActionHistory {
+  usuario: string;
+  estsatus: string; // Parece un error de escritura, debería ser "estatus"?
+  fecha: string;
+  comentario: string;
+}
 const DetalleTicket: NextPageWithLayout = () => {
   const router = useRouter();
-  const [dataDetalleTicket, setDetalleTicket] = useState([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { slug } = router.query;
+  const [dataDetalleTicket, setDetalleTicket] = useState<Ticket | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<AlertCompProps>({
     severity: "success",
@@ -27,10 +53,6 @@ const DetalleTicket: NextPageWithLayout = () => {
     message: "",
   });
   // const { data: session, status } = useSession();
-  // const router = useRouter();
-  // if (status === "loading") {
-  //   return <Loader />;
-  // }
 
   // // Si no hay sesión, redirige al usuario al inicio de sesión
   // if (!session) {
@@ -39,12 +61,14 @@ const DetalleTicket: NextPageWithLayout = () => {
   //   }
   //   return null;
   // }
-  const getDetalleTicket = async () => {
+  const getDetalleTicket = async (id: string) => {
     setLoading(true);
+
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/tickets/detalleTicket",
-        { id: router.query.slug }
+        { id }
       );
       console.log("detalle", response.data);
       setDetalleTicket(response.data);
@@ -70,11 +94,28 @@ const DetalleTicket: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    getDetalleTicket();
-    console.log("dataDetalleTicket", dataDetalleTicket);
-  }, []);
+    if (slug) {
+      getDetalleTicket(slug as string);
+    }
+  }, [slug]);
 
-  return <DetalleTicketCont dataDetalleTicket={dataDetalleTicket} />;
+  if (loading) {
+    return <Loader />;
+  }
+  return (
+    <>
+      {showAlert && (
+        <AlertComp
+          severity={alertInfo.severity}
+          title={alertInfo.title}
+          message={alertInfo.message}
+          show={showAlert}
+          handleShow={setShowAlert}
+        />
+      )}
+      <DetalleTicketCont dataDetalleTicket={dataDetalleTicket} />;
+    </>
+  );
 };
 
 DetalleTicket.getLayout = function getLayout(page: ReactElement) {

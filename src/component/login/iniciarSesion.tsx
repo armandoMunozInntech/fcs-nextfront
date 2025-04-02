@@ -8,8 +8,8 @@ interface LoginValues {
   password: string;
 }
 interface IniciarSesionProps {
-  onLogin: (values: LoginValues) => void; // `onLogin` es una función que recibe un objeto de tipo `LoginValues`
-  setForgotPswd: (values: boolean) => void; // `onLogin` es una función que recibe un objeto de tipo `LoginValues`
+  onLogin: (values: LoginValues) => void;
+  setForgotPswd: (values: boolean) => void;
 }
 
 const IniciarSesion: React.FC<IniciarSesionProps> = ({
