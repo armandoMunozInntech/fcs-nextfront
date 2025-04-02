@@ -1,8 +1,16 @@
+import React, { useState } from "react";
 import ModalCustom from "@/component/common/modal";
 import ComentariosTicket from "@/component/tickets/comentariosTickets";
 import DetalleTicket from "@/component/tickets/detalleTicket";
 import { Grid2, Paper } from "@mui/material";
-import React, { useState } from "react";
+import ContEstatusAbierto from "@/component/tickets/contEstatusAbierto";
+import ContEstatusProceso from "@/component/tickets/contEstatusProceso";
+import ContEstatusProcSinGar from "@/component/tickets/contEstatusProcSinGar";
+import ContEstatusGarantia from "@/component/tickets/contEstatusGarantia";
+import ContEstatusGarFolioAct from "@/component/tickets/contEstatusGarFolioAct";
+import ContAnadirObservacion from "@/component/tickets/contAnadirObservacion";
+import ContCancelar from "@/component/tickets/contCancelar";
+import ContReasignar from "@/component/tickets/contReasignar";
 
 interface Ticket {
   coordinator: string;
@@ -33,13 +41,75 @@ interface ActionHistory {
   comentario: string;
 }
 
-const DetalleTicketCont: React.FC<{ dataDetalleTicket: Ticket | null }> = ({
+interface EncargadoProps {
+  id: string;
+  valor: string;
+}
+
+interface DetalleTicketContProps {
+  dataDetalleTicket: Ticket | null;
+  encargado: EncargadoProps[];
+  asignaTIcket: (encargado: string, procede: string) => void;
+}
+
+const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
   dataDetalleTicket,
+  encargado,
+  asignaTIcket,
 }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openModalEstatus, setOpenModalEstatus] = useState<boolean>(false);
+  const [openModalObservacion, setOpenModalObservacion] =
+    useState<boolean>(false);
+  const [openModalCancelar, setOpenModalCancelar] = useState<boolean>(false);
+  const [openModalReasignar, setOpenModalReasignar] = useState<boolean>(false);
+
+  const ContModal: React.FC<{ status: string }> = ({ status }) => {
+    switch (status.toLocaleLowerCase()) {
+      case "abierto":
+        return (
+          <ContEstatusAbierto
+            setOpen={setOpenModalEstatus}
+            encargado={encargado}
+            asignaTicket={asignaTIcket}
+          />
+        );
+      case "en proceso":
+        return <ContEstatusProceso setOpen={setOpenModalEstatus} />;
+      case "en proceso - sin garantia":
+      case "en proceso - con garantia":
+        return <ContEstatusProcSinGar setOpen={setOpenModalEstatus} />;
+      case "garantia":
+        return <ContEstatusGarantia setOpen={setOpenModalEstatus} />;
+      case "garantia - folio actualizado":
+        return (
+          <ContEstatusGarFolioAct
+            setOpen={setOpenModalEstatus}
+            encargado={encargado}
+          />
+        );
+
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <>
-      <ModalCustom open={open} setOpen={setOpen} />
+      <ModalCustom open={openModalEstatus} setOpen={setOpenModalEstatus}>
+        <ContModal status={dataDetalleTicket?.status as string} />
+      </ModalCustom>
+      <ModalCustom
+        open={openModalObservacion}
+        setOpen={setOpenModalObservacion}
+      >
+        <ContAnadirObservacion setOpen={setOpenModalObservacion} />
+      </ModalCustom>
+      <ModalCustom open={openModalCancelar} setOpen={setOpenModalCancelar}>
+        <ContCancelar setOpen={setOpenModalCancelar} />
+      </ModalCustom>
+      <ModalCustom open={openModalReasignar} setOpen={setOpenModalReasignar}>
+        <ContReasignar setOpen={setOpenModalReasignar} encargado={encargado} />
+      </ModalCustom>
       <Grid2
         container
         gap={1}
@@ -72,7 +142,11 @@ const DetalleTicketCont: React.FC<{ dataDetalleTicket: Ticket | null }> = ({
             <ComentariosTicket
               comentariosData={dataDetalleTicket?.actions_history || null}
               fechaAlta={dataDetalleTicket?.registration_date || ""}
-              setOpen={setOpen}
+              status={dataDetalleTicket?.status || ""}
+              setOpenModalEstatus={setOpenModalEstatus}
+              setOpenModalObservacion={setOpenModalObservacion}
+              setOpenModalCancelar={setOpenModalCancelar}
+              setOpenModalReasignar={setOpenModalReasignar}
             />
           </Paper>
         </Grid2>

@@ -46,10 +46,17 @@ interface ActionHistory {
   fecha: string;
   comentario: string;
 }
+
+interface EncargadoProps {
+  id: string;
+  valor: string;
+}
+
 const DetalleTicket: NextPageWithLayout = () => {
   const router = useRouter();
   const { slug } = router.query;
   const [dataDetalleTicket, setDetalleTicket] = useState<Ticket | null>(null);
+  const [encargado, setEncargado] = useState<EncargadoProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<AlertCompProps>({
@@ -66,6 +73,7 @@ const DetalleTicket: NextPageWithLayout = () => {
   //   }
   //   return null;
   // }
+
   const getDetalleTicket = async (id: string) => {
     setLoading(true);
 
@@ -74,7 +82,8 @@ const DetalleTicket: NextPageWithLayout = () => {
         "http://localhost:4000/api/tickets/detalleTicket",
         { id }
       );
-      console.log("detalle", response.data);
+      console.log(response.data);
+
       setDetalleTicket(response.data);
       setAlertInfo({
         severity: "success",
@@ -97,6 +106,73 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
+  const getEncargado = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/tickets/encargadoTicket",
+        { id_pais: "211BDCCB-9B6C-4715-AB79-50D70ED1F4EE" }
+      );
+      setAlertInfo({
+        severity: "success",
+        title: "Exito: ",
+        message: "Se ha cargado con exito",
+      });
+      setEncargado(response.data);
+      setLoading(false);
+      setShowAlert(true);
+
+      return response;
+    } catch (error) {
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message: "Error desconocido",
+      });
+      setShowAlert(true);
+      setLoading(false);
+      return error;
+    }
+  };
+
+  const asignaTIcket = async (encargado: string, procede: string) => {
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/tickets/asignaTicket",
+        { id: dataDetalleTicket?.id, id_encargado: encargado, procede }
+      );
+
+      getDetalleTicket(slug as string);
+      setAlertInfo({
+        severity: "success",
+        title: "Exito: ",
+        message: "Se asignó con éxito",
+      });
+      setLoading(false);
+      setShowAlert(true);
+
+      return response;
+    } catch (error) {
+      console.log("error", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message: "Error desconocido",
+      });
+      setShowAlert(true);
+      setLoading(false);
+      return error;
+    }
+  };
+
+  useEffect(() => {
+    getEncargado();
+  }, []);
+
   useEffect(() => {
     if (slug) {
       getDetalleTicket(slug as string);
@@ -117,7 +193,12 @@ const DetalleTicket: NextPageWithLayout = () => {
           handleShow={setShowAlert}
         />
       )}
-      <DetalleTicketCont dataDetalleTicket={dataDetalleTicket} />;
+      <DetalleTicketCont
+        dataDetalleTicket={dataDetalleTicket}
+        encargado={encargado}
+        asignaTIcket={asignaTIcket}
+      />
+      ;
     </>
   );
 };
