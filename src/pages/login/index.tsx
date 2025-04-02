@@ -6,6 +6,7 @@ import { AlertProps } from "@mui/material";
 import Loader from "@/component/common/loader";
 import { sha256 } from "js-sha256";
 import axios from "axios";
+import { setCookie } from "cookies-next";
 
 interface LoginValues {
   email: string;
@@ -42,9 +43,20 @@ const Login: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:4000/api/auth/login", {
-        email: values.email,
-        password: sha256.hex(values?.password || "").toLocaleUpperCase(),
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/login",
+        {
+          email: values.email,
+          password: sha256.hex(values?.password || "").toLocaleUpperCase(),
+        }
+      );
+      const userData = response.data.user;
+
+      Object.entries(userData).forEach(([key, value]) => {
+        setCookie(key, value || "", {
+          maxAge: 60 * 60 * 24,
+          path: "/",
+        });
       });
 
       router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso

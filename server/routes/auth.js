@@ -9,6 +9,8 @@ const getUserData = (userData) => ({
   email: userData.find((item) => item.dato === "correo")?.valor || "",
   name: userData.find((item) => item.dato === "nombre")?.valor || "",
   id_perfil: userData.find((item) => item.dato === "id_perfil")?.valor || "",
+  id_pais: userData.find((item) => item.dato === "id_pais")?.valor || "",
+  pais: userData.find((item) => item.dato === "pais")?.valor || "",
 });
 
 // Función para obtener tiempo de sesión
@@ -18,16 +20,6 @@ const getSessionTime = (userData) => {
   return parseInt(tiempoSesion, 10) || 0;
 };
 
-// Función para crear cookie de autenticación con usuario y token
-const createAuthCookie = (token, user, sessionTime) =>
-  serialize("authData", JSON.stringify({ token, user }), {
-    httpOnly: true,
-    // secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: sessionTime * 60, // Convertir minutos a segundos
-    path: "/",
-  });
-
 // 🚀 **Ruta de login**
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -35,7 +27,8 @@ router.post("/login", async (req, res) => {
   try {
     const response = await axios.post(
       "http://test.vrt-fcs.com/api_migracion/account/Login",
-      { email, password }
+      { email, password },
+      { credentials: "include" }
     );
 
     const token = response.data?.token;
@@ -47,8 +40,32 @@ router.post("/login", async (req, res) => {
     const user = getUserData(userData);
     const sessionTime = getSessionTime(userData);
 
-    // 🛠 **Crear cookie con usuario y token**
-    res.setHeader("Set-Cookie", createAuthCookie(token, user, sessionTime));
+    // 🛠 **Crear cookies individuales**
+    const cookies = [
+      serialize("token", token, {
+        httpOnly: true,
+        sameSite: "Lax",
+        maxAge: sessionTime * 60,
+        path: "/",
+      }),
+      serialize("email", user.email, {
+        sameSite: "Lax",
+        maxAge: sessionTime * 60,
+        path: "/",
+      }),
+      serialize("name", user.name, {
+        sameSite: "Lax",
+        maxAge: sessionTime * 60,
+        path: "/",
+      }),
+      serialize("id_perfil", user.id_perfil, {
+        sameSite: "Lax",
+        maxAge: sessionTime * 60,
+        path: "/",
+      }),
+    ];
+
+    res.setHeader("Set-Cookie", cookies);
 
     return res.json({
       message: "Login exitoso",
@@ -63,7 +80,7 @@ router.post("/login", async (req, res) => {
         });
       }
     } else {
-      console.error(" Error Inesperado:", error);
+      console.error("Error Inesperado:", error);
     }
     return res.status(500).json({ message: "Error en el servidor" });
   }
@@ -73,17 +90,32 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   console.log("🚪 Cierre de sesión solicitado");
 
-  // Crear una cookie expirada para borrar la existente
-  res.setHeader(
-    "Set-Cookie",
-    serialize("authData", "", {
+  // Crear cookies expiradas para eliminar las existentes
+  const expiredCookies = [
+    serialize("token", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 0, // Expira inmediatamente
+      maxAge: 0,
       path: "/",
-    })
-  );
+    }),
+    serialize("email", "", {
+      sameSite: "strict",
+      maxAge: 0,
+      path: "/",
+    }),
+    serialize("name", "", {
+      sameSite: "strict",
+      maxAge: 0,
+      path: "/",
+    }),
+    serialize("id_perfil", "", {
+      sameSite: "strict",
+      maxAge: 0,
+      path: "/",
+    }),
+  ];
+
+  res.setHeader("Set-Cookie", expiredCookies);
 
   return res.json({ message: "Logout exitoso" });
 });
@@ -92,13 +124,16 @@ router.post("/logout", (req, res) => {
 router.get("/me", (req, res) => {
   const cookies = req.headers.cookie ? parse(req.headers.cookie) : {};
 
-  const authData = cookies.authData ? JSON.parse(cookies.authData) : null;
+  const token = cookies.token || null;
+  const email = cookies.email || null;
+  const name = cookies.name || null;
+  const id_perfil = cookies.id_perfil || null;
 
-  if (!authData || !authData.user) {
+  if (!token || !email) {
     return res.status(401).json({ message: "No autenticado" });
   }
 
-  return res.json(authData.user);
+  return res.json({ token, email, name, id_perfil });
 });
 
 export default router;

@@ -87,7 +87,7 @@ router.post("/asignaTicket", async (req, res) => {
 
     return res.status(200).json(response?.data);
   } catch (error) {
-    /*     if (isAxiosError(error)) {
+        if (isAxiosError(error)) {
       console.error("🚨 Error API:", error.response?.data || error.message);
       if (error.response?.status === 401) {
         return res.status(401).json({
@@ -96,7 +96,7 @@ router.post("/asignaTicket", async (req, res) => {
       }
     } else {
       console.error(" Error Inesperado:", error);
-    } */
+    } 
     return res.status(500).json(error.response?.data || error.message);
   }
 });

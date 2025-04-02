@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { Cancel, Comment } from "@mui/icons-material";
-// import { Cancel, Comment } from "@mui/icons-material";
 
 interface ActionHistory {
   usuario: string;
@@ -65,18 +64,18 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
                 Cambiar Estatus
               </Button>
             </Grid2>
-            {status.toLocaleLowerCase() == "proceso - con garantia" &&
-              status.toLocaleLowerCase() == "proceso - sin garantia" && (
-                <Grid2 justifyContent="center">
-                  <Button
-                    variant="contained"
-                    color="warning"
-                    onClick={() => setOpenModalReasignar(true)}
-                  >
-                    Reasignar
-                  </Button>
-                </Grid2>
-              )}
+            {(status.toLocaleLowerCase() !== "proceso - con garantia" ||
+              status.toLocaleLowerCase() !== "proceso - sin garantia") && (
+              <Grid2 justifyContent="center">
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={() => setOpenModalReasignar(true)}
+                >
+                  Reasignar
+                </Button>
+              </Grid2>
+            )}
             <Grid2 justifyContent="center">
               <Button
                 variant="contained"

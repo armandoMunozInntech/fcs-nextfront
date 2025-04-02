@@ -11,6 +11,7 @@ import { AlertProps } from "@mui/material";
 import { useRouter } from "next/router";
 import AlertComp from "@/component/common/alert";
 import Loader from "@/component/common/loader";
+import { getCookie } from "cookies-next";
 
 interface AlertCompProps {
   severity: AlertProps["severity"];
@@ -64,6 +65,8 @@ const DetalleTicket: NextPageWithLayout = () => {
     title: "",
     message: "",
   });
+
+  const id_pais = getCookie("id_pais");
   // const { data: session, status } = useSession();
 
   // // Si no hay sesión, redirige al usuario al inicio de sesión
@@ -112,7 +115,7 @@ const DetalleTicket: NextPageWithLayout = () => {
     try {
       const response = await axios.post(
         "http://localhost:4000/api/tickets/encargadoTicket",
-        { id_pais: "211BDCCB-9B6C-4715-AB79-50D70ED1F4EE" }
+        { id_pais }
       );
       setAlertInfo({
         severity: "success",
