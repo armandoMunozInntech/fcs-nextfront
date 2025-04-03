@@ -3,19 +3,23 @@ import next from "next";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import ticketsRoutes from "./routes/tickets.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const PORT = 4000;
+const PORT = process.env.PORT || 5000;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
 
 app.prepare().then(() => {
   const server = express();
 
   server.use(
     cors({
-      origin: "http://localhost:3000", // Permitir peticiones desde el frontend
+      origin: FRONTEND_URL, // Permitir peticiones desde el frontend
       methods: "GET, POST, PUT, DELETE", // Métodos permitidos
       credentials: true, // Permitir cookies si usas autenticación
     })
@@ -33,6 +37,6 @@ app.prepare().then(() => {
   });
 
   server.listen(PORT, () => {
-    console.log(`🚀 Servidor Express corriendo en http://localhost:${PORT}`);
+    console.log(`🚀 Servidor Express corriendo en ${FRONTEND_URL}${PORT}`);
   });
 });

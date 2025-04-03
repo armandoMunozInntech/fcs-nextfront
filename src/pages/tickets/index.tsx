@@ -4,10 +4,10 @@ import React, { ReactElement, useEffect, useState } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import TicketsCont from "@/container/tickets/ticketsCont";
-import axios from "axios";
 import { AlertProps } from "@mui/material";
 import AlertComp from "@/component/common/alert";
 import Loader from "@/component/common/loader";
+import api from "@/utils/api";
 
 interface AlertCompProps {
   severity: AlertProps["severity"];
@@ -41,8 +41,8 @@ const Tickets: NextPageWithLayout = () => {
   const getTickets = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/tickets/ticketsList"
+      const response = await api.post(
+        "/api/tickets/ticketsList"
       );
       setDataTickets(response.data);
       setAlertInfo({

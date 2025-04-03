@@ -6,12 +6,12 @@ import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 // import Loader from "@/component/common/loader";
 import DetalleTicketCont from "@/container/tickets/detalleTicketCont";
-import axios from "axios";
 import { AlertProps } from "@mui/material";
 import { useRouter } from "next/router";
 import AlertComp from "@/component/common/alert";
 import Loader from "@/component/common/loader";
 import { getCookie } from "cookies-next";
+import api from "@/utils/api";
 
 interface AlertCompProps {
   severity: AlertProps["severity"];
@@ -81,8 +81,8 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/tickets/detalleTicket",
+      const response = await api.post(
+        "/api/tickets/detalleTicket",
         { id }
       );
       console.log(response.data);
@@ -113,8 +113,8 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/tickets/encargadoTicket",
+      const response = await api.post(
+        "/api/tickets/encargadoTicket",
         { id_pais }
       );
       setAlertInfo({
@@ -143,8 +143,8 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/tickets/asignaTicket",
+      const response = await api.post(
+        "/api/tickets/asignaTicket",
         { id: dataDetalleTicket?.id, id_encargado: encargado, procede }
       );
 
