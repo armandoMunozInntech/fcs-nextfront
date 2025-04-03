@@ -12,25 +12,24 @@ import { useFormik } from "formik";
 
 interface ContEstatusAbiertoProps {
   setOpen: (open: boolean) => void;
-  asignaTicket?: (procede: string) => void;
+  garantiaTicket: (garantia: string) => void;
 }
 
-const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({ setOpen }) => {
+const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({ setOpen, garantiaTicket }) => {
   const handleClose = () => {
     setOpen(false);
   };
   const validationSchema = yup.object({
-    procede: yup.boolean().required("Procede garantía es requerida"),
+    garantia: yup.boolean().required("Procede garantía es requerida"),
   });
 
   const modalFormik = useFormik({
     initialValues: {
-      procede: false,
-      encargado: "",
+      garantia: false,
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      garantiaTicket(values.garantia.toString())
 
       setOpen(false);
     },
@@ -69,15 +68,15 @@ const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({ setOpen }) => {
             <Switch
               id="procede"
               name="procede"
-              value={modalFormik.values.procede}
+              value={modalFormik.values.garantia}
               onChange={modalFormik.handleChange}
             />
             Si
           </Grid2>
         </Grid2>
-        {modalFormik.touched.procede && modalFormik.errors.procede && (
+        {modalFormik.touched.garantia && modalFormik.errors.garantia && (
           <span style={{ color: "red", fontSize: "0.8rem" }}>
-            {modalFormik.errors.procede}
+            {modalFormik.errors.garantia}
           </span>
         )}
       </DialogContent>

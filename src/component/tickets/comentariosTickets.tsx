@@ -126,9 +126,11 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
                         Modificado por:&nbsp;
                       </Typography>
                       <Typography variant="caption" color="primary">
-                        {comentario?.usuario}
+                        {comentario?.usuario.toLocaleUpperCase()}
                       </Typography>
-                      <Typography>{comentario?.comentario}</Typography>
+                      <Typography>
+                        {comentario?.comentario.toLocaleUpperCase()}
+                      </Typography>
                     </StepContent>
                   </Step>
                 );

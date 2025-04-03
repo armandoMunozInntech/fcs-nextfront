@@ -14,11 +14,12 @@ import {
 
 interface ContEstatusProcSinGarProps {
   setOpen: (open: boolean) => void;
-  asignaTicket?: (procede: string) => void;
+  actualizarFolio: (folio: string) => void;
 }
 
 const ContEstatusGarantia: React.FC<ContEstatusProcSinGarProps> = ({
   setOpen,
+  actualizarFolio
 }) => {
   const handleClose = () => {
     setOpen(false);
@@ -33,7 +34,7 @@ const ContEstatusGarantia: React.FC<ContEstatusProcSinGarProps> = ({
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      actualizarFolio(values.folio);
       setOpen(false);
     },
     onReset: () => {},

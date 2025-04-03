@@ -22,12 +22,14 @@ interface EncargadoProps {
 
 interface ContEstatusProcSinGarProps {
   setOpen: (open: boolean) => void;
+  asignaTicketCallcenter: (encargado: string) => void;
   encargado: EncargadoProps[];
 }
 
 const ContEstatusGarFolioAct: React.FC<ContEstatusProcSinGarProps> = ({
   setOpen,
   encargado,
+  asignaTicketCallcenter,
 }) => {
   const handleClose = () => {
     setOpen(false);
@@ -42,7 +44,7 @@ const ContEstatusGarFolioAct: React.FC<ContEstatusProcSinGarProps> = ({
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      asignaTicketCallcenter(values.coordinador);
       setOpen(false);
     },
     onReset: () => {},

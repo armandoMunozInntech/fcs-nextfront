@@ -65,7 +65,7 @@ const DetalleTicket: NextPageWithLayout = () => {
     title: "",
     message: "",
   });
-
+  
   const id_pais = getCookie("id_pais");
   // const { data: session, status } = useSession();
 
@@ -83,19 +83,29 @@ const DetalleTicket: NextPageWithLayout = () => {
     try {
       const response = await api.post("/api/tickets/detalleTicket", { id });
 
-      setDetalleTicket(response.data);
-      setLoading(false);
+      if (response.data && !response.data?.isSuccess) {
+        setDetalleTicket(response.data);
+        setLoading(false);
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "Falla en servicio",
+        });
+        setShowAlert(true);
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
 
-      return response;
-    } catch (error) {
       setAlertInfo({
         severity: "error",
         title: "Error",
-        message: "Error desconocido",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
       });
       setShowAlert(true);
+    } finally {
       setLoading(false);
-      return error;
     }
   };
 
@@ -106,23 +116,34 @@ const DetalleTicket: NextPageWithLayout = () => {
       const response = await api.post("/api/tickets/encargadoTicket", {
         id_pais,
       });
-      setEncargado(response.data);
-      setLoading(false);
 
-      return response;
-    } catch (error) {
+      if (response.data && !response.data?.isSuccess) {
+        setEncargado(response.data);
+        setLoading(false);
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "Falla en servicio",
+        });
+        setShowAlert(true);
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
       setAlertInfo({
         severity: "error",
         title: "Error",
-        message: "Error desconocido",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
       });
       setShowAlert(true);
+    } finally {
       setLoading(false);
-      return error;
     }
   };
 
-  const asignaTIcket = async (encargado: string, procede: string) => {
+  const asignaTicket = async (encargado: string, procede: string) => {
     setLoading(true);
 
     try {
@@ -132,27 +153,261 @@ const DetalleTicket: NextPageWithLayout = () => {
         procede,
       });
 
-      getDetalleTicket(slug as string);
-      setAlertInfo({
-        severity: "success",
-        title: "Exito: ",
-        message: "Se asignó con éxito",
-      });
-      setLoading(false);
-      setShowAlert(true);
-
-      return response;
-    } catch (error) {
-      console.log("error", error);
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "El ticket se asignó con exito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo asignar el ticket",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
 
       setAlertInfo({
         severity: "error",
         title: "Error",
-        message: "Error desconocido",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
       });
+    } finally {
       setShowAlert(true);
       setLoading(false);
-      return error;
+    }
+  };
+
+  const reasignaTicket = async (encargado: string, comentario: string) => {
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/tickets/reasignaTicket", {
+        id: dataDetalleTicket?.id,
+        id_encargado: encargado,
+        comentario,
+      });
+
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "El ticket se reasigno con éxito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo reasignar el ticket",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
+      });
+    } finally {
+      setShowAlert(true);
+      setLoading(false);
+    }
+  };
+
+  const asignaTicketCallcenter = async (encargado: string) => {
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/tickets/asignaTicketCallcenter", {
+        id: dataDetalleTicket?.id,
+        id_encargado: encargado,
+      });
+
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "El ticket se asignó con éxito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo asignar el ticket",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
+      });
+    } finally {
+      setShowAlert(true);
+      setLoading(false);
+    }
+  };
+
+  const garantiaTicket = async (garantia: string) => {
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/tickets/asignaTicket", {
+        id: dataDetalleTicket?.id,
+        garantia,
+      });
+
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "El cambio estatus con éxito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo cambiar estatus del ticket",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
+      });
+    } finally {
+      setShowAlert(true);
+      setLoading(false);
+    }
+  };
+
+  const cerrarTicket = async (comentario: string) => {
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/tickets/cerrarTicket", {
+        id: dataDetalleTicket?.id,
+        comentario,
+      });
+
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "El ticket se cerró con éxito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo cerrar el ticket",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
+      });
+    } finally {
+      setShowAlert(true);
+      setLoading(false);
+    }
+  };
+
+  const comentarTicket = async (comentario: string) => {
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/tickets/comentarTicket", {
+        id: dataDetalleTicket?.id,
+        comentario,
+      });
+
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "Se agrego observación con éxito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo agregar observación el ticket",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
+      });
+    } finally {
+      setShowAlert(true);
+      setLoading(false);
+    }
+  };
+
+  const actualizarFolio = async (folio: string) => {
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/tickets/actualizarFolio", {
+        id: dataDetalleTicket?.id,
+        folio,
+      });
+
+      if (response.data?.isSuccess) {
+        getDetalleTicket(slug as string);
+        setAlertInfo({
+          severity: "success",
+          title: "Éxito",
+          message: "El folio se actualizo con éxito",
+        });
+      } else {
+        setAlertInfo({
+          severity: "warning",
+          title: "Aviso",
+          message: response.data?.message || "No se pudo actualizar el folio",
+        });
+      }
+    } catch (error: any) {
+      console.error("🚨 Error en cerrarTicket:", error);
+
+      setAlertInfo({
+        severity: "error",
+        title: "Error",
+        message:
+          error.response?.data?.message || error.message || "Error desconocido",
+      });
+    } finally {
+      setShowAlert(true);
+      setLoading(false);
     }
   };
 
@@ -183,7 +438,13 @@ const DetalleTicket: NextPageWithLayout = () => {
       <DetalleTicketCont
         dataDetalleTicket={dataDetalleTicket}
         encargado={encargado}
-        asignaTIcket={asignaTIcket}
+        asignaTIcket={asignaTicket}
+        garantiaTicket={garantiaTicket}
+        cerrarTicket={cerrarTicket}
+        actualizarFolio={actualizarFolio}
+        comentarTicket={comentarTicket}
+        reasignaTicket={reasignaTicket}
+        asignaTicketCallcenter={asignaTicketCallcenter}
       />
       ;
     </>

@@ -6,18 +6,18 @@ const router = express.Router();
 
 // Función para extraer datos del usuario
 const getUserData = (userData) => ({
-  email: userData.find((item) => item.dato === "correo")?.valor || "",
-  name: userData.find((item) => item.dato === "nombre")?.valor || "",
-  id_perfil: userData.find((item) => item.dato === "id_perfil")?.valor || "",
-  id_pais: userData.find((item) => item.dato === "id_pais")?.valor || "",
-  pais: userData.find((item) => item.dato === "pais")?.valor || "",
-  sessionTime: getSessionTime(),
+  email: userData?.find((item) => item.dato === "correo")?.valor || "",
+  name: userData?.find((item) => item.dato === "nombre")?.valor || "",
+  id_perfil: userData?.find((item) => item.dato === "id_perfil")?.valor || "",
+  id_pais: userData?.find((item) => item.dato === "id_pais")?.valor || "",
+  pais: userData?.find((item) => item.dato === "pais")?.valor || "",
+  sessionTime: getSessionTime() || 60,
 });
 
 // Función para obtener tiempo de sesión
 const getSessionTime = (userData) => {
   const tiempoSesion =
-    userData.find((item) => item.dato === "tiempo_sesion")?.valor || "0";
+    userData?.find((item) => item.dato === "tiempo_sesion")?.valor || "0";
   return parseInt(tiempoSesion, 10) || 0;
 };
 
@@ -39,10 +39,7 @@ router.post("/login", async (req, res) => {
 
     const userData = response.data?.data || [];
     const user = getUserData(userData);
-    const sessionTime = getSessionTime(userData);
 
-
-    res.setHeader("Set-Cookie", cookies);
 
     return res.json({
       message: "Login exitoso",
@@ -59,7 +56,7 @@ router.post("/login", async (req, res) => {
     } else {
       console.error("Error Inesperado:", error);
     }
-    return res.status(500).json({ message: "Error en el servidor" });
+    return res.status(500).json({ message: "Error en el servidor", error: error });
   }
 });
 

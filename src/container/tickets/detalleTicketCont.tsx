@@ -51,6 +51,12 @@ interface DetalleTicketContProps {
   dataDetalleTicket: Ticket | null;
   encargado: EncargadoProps[];
   asignaTIcket: (encargado: string, procede: string) => void;
+  garantiaTicket: (garantia: string) => void;
+  cerrarTicket: (comentario: string) => void;
+  comentarTicket: (comentario: string) => void;
+  actualizarFolio: (folio: string) => void;
+  reasignaTicket: (encargado: string, comentario: string) => void;
+  asignaTicketCallcenter: (encargado: string) => void;
 }
 
 const ContModal: React.FC<{
@@ -58,7 +64,20 @@ const ContModal: React.FC<{
   setOpen: (open: boolean) => void;
   encargado: EncargadoProps[];
   asignaTIcket: (encargado: string, procede: string) => void;
-}> = ({ status, setOpen, encargado, asignaTIcket }) => {
+  garantiaTicket: (garantia: string) => void;
+  cerrarTicket: (comentario: string) => void;
+  actualizarFolio: (folio: string) => void;
+  asignaTicketCallcenter: (encargado: string) => void;
+}> = ({
+  status,
+  setOpen,
+  encargado,
+  asignaTIcket,
+  garantiaTicket,
+  cerrarTicket,
+  actualizarFolio,
+  asignaTicketCallcenter,
+}) => {
   const statusMap: Record<string, JSX.Element> = {
     abierto: (
       <ContEstatusAbierto
@@ -67,12 +86,27 @@ const ContModal: React.FC<{
         asignaTicket={asignaTIcket}
       />
     ),
-    "en proceso": <ContEstatusProceso setOpen={setOpen} />,
-    "en proceso - sin garantia": <ContEstatusProcSinGar setOpen={setOpen} />,
-    "en proceso - con garantia": <ContEstatusProcSinGar setOpen={setOpen} />,
-    garantia: <ContEstatusGarantia setOpen={setOpen} />,
+    "en proceso": (
+      <ContEstatusProceso setOpen={setOpen} garantiaTicket={garantiaTicket} />
+    ),
+    "en proceso - sin garantia": (
+      <ContEstatusProcSinGar setOpen={setOpen} cerrarTicket={cerrarTicket} />
+    ),
+    "en proceso - con garantia": (
+      <ContEstatusProcSinGar setOpen={setOpen} cerrarTicket={cerrarTicket} />
+    ),
+    garantia: (
+      <ContEstatusGarantia
+        setOpen={setOpen}
+        actualizarFolio={actualizarFolio}
+      />
+    ),
     "garantia - folio actualizado": (
-      <ContEstatusGarFolioAct setOpen={setOpen} encargado={encargado} />
+      <ContEstatusGarFolioAct
+        setOpen={setOpen}
+        encargado={encargado}
+        asignaTicketCallcenter={asignaTicketCallcenter}
+      />
     ),
   };
 
@@ -83,6 +117,12 @@ const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
   dataDetalleTicket,
   encargado,
   asignaTIcket,
+  garantiaTicket,
+  cerrarTicket,
+  actualizarFolio,
+  comentarTicket,
+  reasignaTicket,
+  asignaTicketCallcenter,
 }) => {
   const [modalStates, setModalStates] = useState({
     estatus: false,
@@ -106,6 +146,10 @@ const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
           setOpen={() => toggleModal("estatus", false)}
           encargado={encargado}
           asignaTIcket={asignaTIcket}
+          garantiaTicket={garantiaTicket}
+          cerrarTicket={cerrarTicket}
+          actualizarFolio={actualizarFolio}
+          asignaTicketCallcenter={asignaTicketCallcenter}
         />
       </ModalCustom>
       <ModalCustom
@@ -114,13 +158,17 @@ const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
       >
         <ContAnadirObservacion
           setOpen={() => toggleModal("observacion", false)}
+          comentarTicket={comentarTicket}
         />
       </ModalCustom>
       <ModalCustom
         open={modalStates.cancelar}
         setOpen={() => toggleModal("cancelar", false)}
       >
-        <ContCancelar setOpen={() => toggleModal("cancelar", false)} />
+        <ContCancelar
+          setOpen={() => toggleModal("cancelar", false)}
+          cerrarTicket={cerrarTicket}
+        />
       </ModalCustom>
       <ModalCustom
         open={modalStates.reasignar}
@@ -129,6 +177,7 @@ const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
         <ContReasignar
           setOpen={() => toggleModal("reasignar", false)}
           encargado={encargado}
+          reasignaTicket={reasignaTicket}
         />
       </ModalCustom>
       <Grid2

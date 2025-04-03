@@ -23,12 +23,14 @@ interface EncargadoProps {
 
 interface ContEstatusProcSinGarProps {
   setOpen: (open: boolean) => void;
+  reasignaTicket: (encargado: string, comentario: string) => void;
   encargado: EncargadoProps[];
 }
 
 const ContReasignar: React.FC<ContEstatusProcSinGarProps> = ({
   setOpen,
   encargado,
+  reasignaTicket,
 }) => {
   const handleClose = () => {
     setOpen(false);
@@ -45,7 +47,7 @@ const ContReasignar: React.FC<ContEstatusProcSinGarProps> = ({
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      reasignaTicket(values.coordinador, values.justificacion);
       setOpen(false);
     },
     onReset: () => {},

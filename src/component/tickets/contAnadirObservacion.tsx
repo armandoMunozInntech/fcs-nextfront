@@ -14,11 +14,12 @@ import {
 
 interface ContEstatusProcSinGarProps {
   setOpen: (open: boolean) => void;
-  asignaTicket?: (procede: string) => void;
+  comentarTicket: (comentario: string) => void;
 }
 
 const ContAnadirObservacion: React.FC<ContEstatusProcSinGarProps> = ({
   setOpen,
+  comentarTicket
 }) => {
   const handleClose = () => {
     setOpen(false);
@@ -33,7 +34,7 @@ const ContAnadirObservacion: React.FC<ContEstatusProcSinGarProps> = ({
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      comentarTicket(values.comentario);
       setOpen(false);
     },
     onReset: () => {},

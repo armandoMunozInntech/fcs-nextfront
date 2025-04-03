@@ -54,18 +54,26 @@ const DetalleTicket: React.FC<{
         <Typography
           variant="body1"
           color={
-            dataDetalleTicket?.status.toLocaleLowerCase() === "cerrado"
+            dataDetalleTicket?.status.toLocaleLowerCase() === "cerrado" ||
+            dataDetalleTicket?.status.toLocaleLowerCase() === "cancelado"
               ? "error"
               : "success"
           }
-          sx={{ textAlign: "center" }}
+          sx={{ textAlign: "center", fontWeight: "bold" }}
         >
           {dataDetalleTicket?.status}
         </Typography>
-        <Typography variant="h6" sx={{ textAlign: "center" }}>
+        <Typography
+          variant="h6"
+          sx={{ textAlign: "center", fontWeight: "bold" }}
+        >
           Ticket: #{dataDetalleTicket?.ticket}
         </Typography>
-        <Typography variant="body1" sx={{ textAlign: "center" }} textTransform="capitalize">
+        <Typography
+          variant="body1"
+          sx={{ textAlign: "center" }}
+          textTransform="capitalize"
+        >
           {dayjs(dataDetalleTicket?.registration_date).format("DD MMMM YYYY")}
         </Typography>
         <Divider />

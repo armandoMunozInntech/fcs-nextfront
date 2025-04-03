@@ -14,30 +14,6 @@ const Dashboard: NextPageWithLayout = () => {
   //   return <Loader />;
   // }
 
-  const getUser = async () => {
-    try {
-      const res = await fetch("http://localhost:4000/api/auth/me", {
-        credentials: "include", // Para incluir cookies en la solicitud
-      });
-
-      // if (!res.ok) {
-      //   throw Error("No autenticado");
-      // }
-      // console.log("me dashboard", await res.json());
-
-      // const user = await res.json();
-      // setUserData(user);
-      // console.log("👤 Usuario autenticado:", user);
-      return true;
-    } catch (error) {
-      console.error("❌ Error obteniendo usuario:", error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
 
   // Si no hay sesión, redirige al usuario al inicio de sesión
   // if (!session) {
