@@ -25,7 +25,7 @@ interface Ticket {
   client: string;
   serial: string;
   cause: string;
-  type_service: string | "";
+  type_service: string | null;
   registration_date: string | Date; // Puede ser un string o un Date
 }
 
@@ -44,6 +44,7 @@ const columnHeaders = [
 const MainTable: React.FC<{ dataTickets: Ticket[] }> = ({ dataTickets }) => {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
+  dayjs.locale("es");
   const [filteredRows, setFilteredRows] = useState<Ticket[]>(dataTickets);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState<keyof Ticket>("ticket");

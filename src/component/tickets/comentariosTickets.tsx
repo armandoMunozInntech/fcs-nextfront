@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
+import "dayjs/locale/es";
 import { Cancel, Comment } from "@mui/icons-material";
 
 interface ActionHistory {
@@ -38,7 +39,7 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
   setOpenModalReasignar,
   status,
 }) => {
-  dayjs.locale("es");
+  dayjs.locale("Es");
   const CustomStepIcon = (estatus: string) => {
     switch (estatus.toLocaleLowerCase()) {
       case "cancelado":
@@ -100,7 +101,7 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
         )}
       <Grid2 container justifyContent="space-between" width="100%">
         <Grid2 size={12}>
-          <Typography variant="h5" sx={{ ml: 2 }}>
+          <Typography variant="h5" sx={{ ml: 2 }} textTransform="capitalize">
             Fecha de Alta: {dayjs(fechaAlta).format("DD MMMM YYYY")}
           </Typography>
         </Grid2>

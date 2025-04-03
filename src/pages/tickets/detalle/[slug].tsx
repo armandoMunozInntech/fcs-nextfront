@@ -81,20 +81,10 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await api.post(
-        "/api/tickets/detalleTicket",
-        { id }
-      );
-      console.log(response.data);
+      const response = await api.post("/api/tickets/detalleTicket", { id });
 
       setDetalleTicket(response.data);
-      setAlertInfo({
-        severity: "success",
-        title: "Exito: ",
-        message: "Se ha cargado con exito",
-      });
       setLoading(false);
-      setShowAlert(true);
 
       return response;
     } catch (error) {
@@ -113,18 +103,11 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await api.post(
-        "/api/tickets/encargadoTicket",
-        { id_pais }
-      );
-      setAlertInfo({
-        severity: "success",
-        title: "Exito: ",
-        message: "Se ha cargado con exito",
+      const response = await api.post("/api/tickets/encargadoTicket", {
+        id_pais,
       });
       setEncargado(response.data);
       setLoading(false);
-      setShowAlert(true);
 
       return response;
     } catch (error) {
@@ -143,10 +126,11 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await api.post(
-        "/api/tickets/asignaTicket",
-        { id: dataDetalleTicket?.id, id_encargado: encargado, procede }
-      );
+      const response = await api.post("/api/tickets/asignaTicket", {
+        id: dataDetalleTicket?.id,
+        id_encargado: encargado,
+        procede,
+      });
 
       getDetalleTicket(slug as string);
       setAlertInfo({

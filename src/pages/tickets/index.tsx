@@ -15,7 +15,6 @@ interface AlertCompProps {
   message: string;
 }
 
-
 const Tickets: NextPageWithLayout = () => {
   const [dataTickets, setDataTickets] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,17 +40,10 @@ const Tickets: NextPageWithLayout = () => {
   const getTickets = async () => {
     setLoading(true);
     try {
-      const response = await api.post(
-        "/api/tickets/ticketsList"
-      );
+      const response = await api.post("/api/tickets/ticketsList");
       setDataTickets(response.data);
-      setAlertInfo({
-        severity: "success",
-        title: "Exito: ",
-        message: "Se han cargado los tickets",
-      });
+
       setLoading(false);
-      setShowAlert(true);
 
       return response;
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import ModalCustom from "@/component/common/modal";
 import ComentariosTicket from "@/component/tickets/comentariosTickets";
 import DetalleTicket from "@/component/tickets/detalleTicket";
@@ -28,6 +28,7 @@ interface Ticket {
   type_service: string | null;
   registration_date: string;
 }
+
 interface SerialHistoryProps {
   serie: string;
   folio: string;
@@ -36,7 +37,7 @@ interface SerialHistoryProps {
 
 interface ActionHistory {
   usuario: string;
-  estatus: string; // Parece un error de escritura, debería ser "estatus"?
+  estatus: string;
   fecha: string;
   comentario: string;
 }
@@ -52,63 +53,83 @@ interface DetalleTicketContProps {
   asignaTIcket: (encargado: string, procede: string) => void;
 }
 
+const ContModal: React.FC<{
+  status: string;
+  setOpen: (open: boolean) => void;
+  encargado: EncargadoProps[];
+  asignaTIcket: (encargado: string, procede: string) => void;
+}> = ({ status, setOpen, encargado, asignaTIcket }) => {
+  const statusMap: Record<string, JSX.Element> = {
+    abierto: (
+      <ContEstatusAbierto
+        setOpen={setOpen}
+        encargado={encargado}
+        asignaTicket={asignaTIcket}
+      />
+    ),
+    "en proceso": <ContEstatusProceso setOpen={setOpen} />,
+    "en proceso - sin garantia": <ContEstatusProcSinGar setOpen={setOpen} />,
+    "en proceso - con garantia": <ContEstatusProcSinGar setOpen={setOpen} />,
+    garantia: <ContEstatusGarantia setOpen={setOpen} />,
+    "garantia - folio actualizado": (
+      <ContEstatusGarFolioAct setOpen={setOpen} encargado={encargado} />
+    ),
+  };
+
+  return statusMap[status.toLowerCase()] || <></>;
+};
+
 const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
   dataDetalleTicket,
   encargado,
   asignaTIcket,
 }) => {
-  const [openModalEstatus, setOpenModalEstatus] = useState<boolean>(false);
-  const [openModalObservacion, setOpenModalObservacion] =
-    useState<boolean>(false);
-  const [openModalCancelar, setOpenModalCancelar] = useState<boolean>(false);
-  const [openModalReasignar, setOpenModalReasignar] = useState<boolean>(false);
+  const [modalStates, setModalStates] = useState({
+    estatus: false,
+    observacion: false,
+    cancelar: false,
+    reasignar: false,
+  });
 
-  const ContModal: React.FC<{ status: string }> = ({ status }) => {
-    switch (status.toLocaleLowerCase()) {
-      case "abierto":
-        return (
-          <ContEstatusAbierto
-            setOpen={setOpenModalEstatus}
-            encargado={encargado}
-            asignaTicket={asignaTIcket}
-          />
-        );
-      case "en proceso":
-        return <ContEstatusProceso setOpen={setOpenModalEstatus} />;
-      case "en proceso - sin garantia":
-      case "en proceso - con garantia":
-        return <ContEstatusProcSinGar setOpen={setOpenModalEstatus} />;
-      case "garantia":
-        return <ContEstatusGarantia setOpen={setOpenModalEstatus} />;
-      case "garantia - folio actualizado":
-        return (
-          <ContEstatusGarFolioAct
-            setOpen={setOpenModalEstatus}
-            encargado={encargado}
-          />
-        );
-
-      default:
-        return <></>;
-    }
+  const toggleModal = (modal: keyof typeof modalStates, value: boolean) => {
+    setModalStates((prev) => ({ ...prev, [modal]: value }));
   };
 
   return (
     <>
-      <ModalCustom open={openModalEstatus} setOpen={setOpenModalEstatus}>
-        <ContModal status={dataDetalleTicket?.status as string} />
+      <ModalCustom
+        open={modalStates.estatus}
+        setOpen={() => toggleModal("estatus", false)}
+      >
+        <ContModal
+          status={dataDetalleTicket?.status || ""}
+          setOpen={() => toggleModal("estatus", false)}
+          encargado={encargado}
+          asignaTIcket={asignaTIcket}
+        />
       </ModalCustom>
       <ModalCustom
-        open={openModalObservacion}
-        setOpen={setOpenModalObservacion}
+        open={modalStates.observacion}
+        setOpen={() => toggleModal("observacion", false)}
       >
-        <ContAnadirObservacion setOpen={setOpenModalObservacion} />
+        <ContAnadirObservacion
+          setOpen={() => toggleModal("observacion", false)}
+        />
       </ModalCustom>
-      <ModalCustom open={openModalCancelar} setOpen={setOpenModalCancelar}>
-        <ContCancelar setOpen={setOpenModalCancelar} />
+      <ModalCustom
+        open={modalStates.cancelar}
+        setOpen={() => toggleModal("cancelar", false)}
+      >
+        <ContCancelar setOpen={() => toggleModal("cancelar", false)} />
       </ModalCustom>
-      <ModalCustom open={openModalReasignar} setOpen={setOpenModalReasignar}>
-        <ContReasignar setOpen={setOpenModalReasignar} encargado={encargado} />
+      <ModalCustom
+        open={modalStates.reasignar}
+        setOpen={() => toggleModal("reasignar", false)}
+      >
+        <ContReasignar
+          setOpen={() => toggleModal("reasignar", false)}
+          encargado={encargado}
+        />
       </ModalCustom>
       <Grid2
         container
@@ -128,25 +149,23 @@ const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
             }),
         ]}
       >
-        <Grid2 size={5}>
-          <Grid2 container sx={{ alignItems: "center", height: "100%" }}>
-            <Grid2 size={12}>
-              <Paper sx={{ p: 2 }} elevation={3}>
-                <DetalleTicket dataDetalleTicket={dataDetalleTicket} />
-              </Paper>
-            </Grid2>
+        <Grid2 size={5} container alignItems="center" height="100%">
+          <Grid2 size={12}>
+            <Paper sx={{ p: 2 }} elevation={3}>
+              <DetalleTicket dataDetalleTicket={dataDetalleTicket} />
+            </Paper>
           </Grid2>
         </Grid2>
-        <Grid2 size={6.5} sx={{ alignItems: "stretch" }}>
-          <Paper sx={{ overflowY: "auto", p: 2 }}>
+        <Grid2 size={6.5}>
+          <Paper sx={{ overflowY: "auto", p: 2, minHeight: "90%" }}>
             <ComentariosTicket
               comentariosData={dataDetalleTicket?.actions_history || null}
               fechaAlta={dataDetalleTicket?.registration_date || ""}
               status={dataDetalleTicket?.status || ""}
-              setOpenModalEstatus={setOpenModalEstatus}
-              setOpenModalObservacion={setOpenModalObservacion}
-              setOpenModalCancelar={setOpenModalCancelar}
-              setOpenModalReasignar={setOpenModalReasignar}
+              setOpenModalEstatus={() => toggleModal("estatus", true)}
+              setOpenModalObservacion={() => toggleModal("observacion", true)}
+              setOpenModalCancelar={() => toggleModal("cancelar", true)}
+              setOpenModalReasignar={() => toggleModal("reasignar", true)}
             />
           </Paper>
         </Grid2>

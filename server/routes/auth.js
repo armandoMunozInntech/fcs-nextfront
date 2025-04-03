@@ -11,6 +11,7 @@ const getUserData = (userData) => ({
   id_perfil: userData.find((item) => item.dato === "id_perfil")?.valor || "",
   id_pais: userData.find((item) => item.dato === "id_pais")?.valor || "",
   pais: userData.find((item) => item.dato === "pais")?.valor || "",
+  sessionTime: getSessionTime(),
 });
 
 // Función para obtener tiempo de sesión
@@ -40,30 +41,6 @@ router.post("/login", async (req, res) => {
     const user = getUserData(userData);
     const sessionTime = getSessionTime(userData);
 
-    // 🛠 **Crear cookies individuales**
-    const cookies = [
-      serialize("token", token, {
-        httpOnly: true,
-        sameSite: "Lax",
-        maxAge: sessionTime * 60,
-        path: "/",
-      }),
-      serialize("email", user.email, {
-        sameSite: "Lax",
-        maxAge: sessionTime * 60,
-        path: "/",
-      }),
-      serialize("name", user.name, {
-        sameSite: "Lax",
-        maxAge: sessionTime * 60,
-        path: "/",
-      }),
-      serialize("id_perfil", user.id_perfil, {
-        sameSite: "Lax",
-        maxAge: sessionTime * 60,
-        path: "/",
-      }),
-    ];
 
     res.setHeader("Set-Cookie", cookies);
 

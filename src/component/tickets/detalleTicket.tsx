@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
+import "dayjs/locale/es";
 
 interface DetalleTicketProp {
   coordinator: string;
@@ -64,7 +65,7 @@ const DetalleTicket: React.FC<{
         <Typography variant="h6" sx={{ textAlign: "center" }}>
           Ticket: #{dataDetalleTicket?.ticket}
         </Typography>
-        <Typography variant="body2" sx={{ textAlign: "center" }}>
+        <Typography variant="body1" sx={{ textAlign: "center" }} textTransform="capitalize">
           {dayjs(dataDetalleTicket?.registration_date).format("DD MMMM YYYY")}
         </Typography>
         <Divider />
