@@ -1,9 +1,7 @@
-import { useRouter } from "next/router";
 import { Typography, Container } from "@mui/material";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import DashboardLayout from "@/component/layout/dashboardLayout";
 import { NextPageWithLayout } from "@/pages/_app";
-import Loader from "@/component/common/loader";
 
 const Dashboard: NextPageWithLayout = () => {
   // const { userData, setUserData } = useState();

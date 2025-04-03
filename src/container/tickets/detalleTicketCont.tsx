@@ -205,8 +205,8 @@ const DetalleTicketCont: React.FC<DetalleTicketContProps> = ({
             </Paper>
           </Grid2>
         </Grid2>
-        <Grid2 size={6.5}>
-          <Paper sx={{ overflowY: "auto", p: 2, minHeight: "90%" }}>
+        <Grid2 size={6.5} sx={{ maxHeight: "90% !important" }}>
+          <Paper sx={{ overflowY: "auto", p: 2 }}>
             <ComentariosTicket
               comentariosData={dataDetalleTicket?.actions_history || null}
               fechaAlta={dataDetalleTicket?.registration_date || ""}

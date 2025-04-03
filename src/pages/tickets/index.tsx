@@ -54,13 +54,12 @@ const Tickets: NextPageWithLayout = () => {
       });
       setShowAlert(true);
       setLoading(false);
-      return true;
+      return error;
     }
   };
 
   useEffect(() => {
     getTickets();
-    console.log("dataTickets", dataTickets);
   }, []);
 
   if (loading) {

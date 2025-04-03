@@ -81,7 +81,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const [open, setOpen] = useState(!!!isSmallScreen);
-  const [selectedFlag, setSelectedFlag] = useState("mexico"); // México como predeterminado
+  // const [selectedFlag, setSelectedFlag] = useState("mexico"); // México como predeterminado
   const drawerWidth = isSmallScreen ? "100%" : 240;
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
@@ -136,8 +136,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <CssBaseline />
         <Header
           togglerDrawer={togglerDrawer}
-          selectedFlag={selectedFlag}
-          setSelectedFlag={setSelectedFlag}
+          // selectedFlag={selectedFlag}
+          // setSelectedFlag={setSelectedFlag}
           menuItems={menuItems}
           setClose={setOpen}
           title={currentTitle}
@@ -171,7 +171,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <Box
           component="main"
           sx={{
-            flexGrow: 1,
             width: open
               ? isSmallScreen
                 ? "0"

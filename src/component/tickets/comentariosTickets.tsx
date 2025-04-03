@@ -99,7 +99,7 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
             </Grid2>
           </Grid2>
         )}
-      <Grid2 container justifyContent="space-between" width="100%">
+      <Grid2 container justifyContent="space-between">
         <Grid2 size={12}>
           <Typography variant="h5" sx={{ ml: 2 }} textTransform="capitalize">
             Fecha de Alta: {dayjs(fechaAlta).format("DD MMMM YYYY")}
@@ -109,8 +109,13 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
           <Divider sx={{ my: 2 }} />
         </Grid2>
         {comentariosData && (
-          <Grid2 size={12}>
-            <Stepper orientation="vertical" nonLinear activeStep={-1}>
+          <Grid2 size={12} sx={{ overflowY: "auto" }}>
+            <Stepper
+              orientation="vertical"
+              nonLinear
+              activeStep={-1}
+              sx={{ maxHeight: "60vh" }}
+            >
               {comentariosData?.map((comentario, index) => {
                 return (
                   <Step key={index} completed expanded>
@@ -119,7 +124,18 @@ const ComentariosTicket: React.FC<ComentariosTicketProps> = ({
                         stepIcon: () => CustomStepIcon(comentario?.estatus),
                       }}
                     >
-                      {comentario?.estatus}
+                      <Grid2
+                        container
+                        justifyContent="space-between"
+                        sx={{ alignItems: "center" }}
+                      >
+                        <Grid2>{comentario?.estatus}</Grid2>
+                        <Grid2 sx={{ pr: 2 }}>
+                          {dayjs(comentario?.fecha)
+                            .format("DD/MMM/YYYY hh:mma")
+                            .toLocaleUpperCase()}
+                        </Grid2>
+                      </Grid2>
                     </StepLabel>
                     <StepContent>
                       <Typography variant="caption">

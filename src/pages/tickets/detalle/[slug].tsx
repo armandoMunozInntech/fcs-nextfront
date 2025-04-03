@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 // import { useRouter } from "next/router";
@@ -65,7 +66,7 @@ const DetalleTicket: NextPageWithLayout = () => {
     title: "",
     message: "",
   });
-  
+
   const id_pais = getCookie("id_pais");
   // const { data: session, status } = useSession();
 
@@ -95,7 +96,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setShowAlert(true);
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en detalleTicket:", error);
 
       setAlertInfo({
         severity: "error",
@@ -129,7 +130,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setShowAlert(true);
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en getEncargado:", error);
 
       setAlertInfo({
         severity: "error",
@@ -168,7 +169,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         });
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en asignaTicket:", error);
 
       setAlertInfo({
         severity: "error",
@@ -207,7 +208,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         });
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en reasignaTicket:", error);
 
       setAlertInfo({
         severity: "error",
@@ -245,7 +246,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         });
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en asignaTicketCallcenter:", error);
 
       setAlertInfo({
         severity: "error",
@@ -263,7 +264,7 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/api/tickets/asignaTicket", {
+      const response = await api.post("/api/tickets/garantiaTicket", {
         id: dataDetalleTicket?.id,
         garantia,
       });
@@ -279,11 +280,12 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo cambiar estatus del ticket",
+          message:
+            response.data?.message || "No se pudo cambiar estatus del ticket",
         });
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en garantiaTicket:", error);
 
       setAlertInfo({
         severity: "error",
@@ -355,11 +357,13 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo agregar observación el ticket",
+          message:
+            response.data?.message ||
+            "No se pudo agregar observación el ticket",
         });
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en comentarTicket:", error);
 
       setAlertInfo({
         severity: "error",
@@ -382,7 +386,9 @@ const DetalleTicket: NextPageWithLayout = () => {
         folio,
       });
 
-      if (response.data?.isSuccess) {
+      console.log(response.data?.isSuccess);
+      
+      if (response?.data?.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -397,7 +403,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         });
       }
     } catch (error: any) {
-      console.error("🚨 Error en cerrarTicket:", error);
+      console.error("🚨 Error en actualizarFolio:", error);
 
       setAlertInfo({
         severity: "error",
@@ -413,6 +419,7 @@ const DetalleTicket: NextPageWithLayout = () => {
 
   useEffect(() => {
     getEncargado();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -446,7 +453,6 @@ const DetalleTicket: NextPageWithLayout = () => {
         reasignaTicket={reasignaTicket}
         asignaTicketCallcenter={asignaTicketCallcenter}
       />
-      ;
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   AppBar,
   Box,
@@ -34,8 +34,8 @@ interface MenuItemProps {
 
 interface HeaderProps {
   togglerDrawer: () => void;
-  setSelectedFlag: (value: string) => void;
-  selectedFlag: string;
+  // setSelectedFlag: (value: string) => void;
+  // selectedFlag: string;
   menuItems?: MenuItemProps[] | null; // Lista dinámica de menús
   setClose: (value: boolean) => void;
   title: string;
@@ -45,8 +45,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   togglerDrawer,
-  setSelectedFlag,
-  selectedFlag,
+  // setSelectedFlag,
+  // selectedFlag,
   setClose,
   title,
   toggleDarkMode,
@@ -59,9 +59,20 @@ const Header: React.FC<HeaderProps> = ({
   // const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
   // const openFlagMenu = Boolean(menuFlag);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [name, setName] = useState<string | null>(null);
+  const [pais, setPais] = useState<string | null>(null);
 
-  const name = getCookie("name");
-  const pais = getCookie("pais")?.toString().toLocaleLowerCase();
+  useEffect(() => {
+    const paisCookie = getCookie("pais");
+    if (paisCookie) {
+      setPais(paisCookie.toString().toLowerCase());
+    }
+    const cookieName = getCookie("name");
+    if (cookieName) {
+      setName(cookieName.toString());
+    }
+  }, []);
+
   const logout = async () => {
     await fetch("http://localhost:4000/api/auth/logout", {
       method: "POST",
@@ -80,12 +91,12 @@ const Header: React.FC<HeaderProps> = ({
   //   setMenuFlag(null);
   // };
 
-  const countries = [
-    { name: "México", emoji: "mexico" },
-    { name: "Colombia", emoji: "colombia" },
-    { name: "Chile", emoji: "chile" },
-    { name: "Argentina", emoji: "argentina" },
-  ];
+  // const countries = [
+  //   { name: "México", emoji: "mexico" },
+  //   { name: "Colombia", emoji: "colombia" },
+  //   { name: "Chile", emoji: "chile" },
+  //   { name: "Argentina", emoji: "argentina" },
+  // ];
 
   const flagImage = () => {
     // switch (selectedFlag) {
