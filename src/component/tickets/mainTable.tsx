@@ -121,7 +121,7 @@ const MainTable: React.FC<{ dataTickets: Ticket[] }> = ({ dataTickets }) => {
   const typeServiceOptions = _.uniq(_.map(dataTickets, "type_service"));
 
   return (
-    <Paper sx={{ m: 2, p: 2, pt: 0 }}>
+    <Paper sx={{ m: 2, p: 2 }}>
       <Grid2 container spacing={2}>
         <Grid2 size={2}>
           <TextField
@@ -181,7 +181,7 @@ const MainTable: React.FC<{ dataTickets: Ticket[] }> = ({ dataTickets }) => {
           </Button>
         </Grid2>
       </Grid2>
-      <TableContainer sx={{ maxHeight: "100%", overflow: "auto" }}>
+      <TableContainer sx={{ maxHeight: "100%", overflow: "auto", mb: 2 }}>
         <Table size="small" stickyHeader>
           <TableHead>
             <TableRow>

@@ -51,7 +51,7 @@ const Login: React.FC = () => {
 
       Object.entries(userData).forEach(([key, value]) => {
         setCookie(key, value || "", {
-          maxAge: 60 * 60 * 24,
+          maxAge: 60  ,
           path: "/",
         });
       });

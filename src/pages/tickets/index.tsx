@@ -78,7 +78,7 @@ const Tickets: NextPageWithLayout = () => {
           handleShow={setShowAlert}
         />
       )}
-      <TicketsCont dataTickets={dataTickets} />;
+      <TicketsCont dataTickets={dataTickets} />
     </>
   );
 };
