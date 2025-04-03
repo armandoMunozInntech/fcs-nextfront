@@ -20,6 +20,7 @@ import flagChile from "@/assets/images/flag-chile.png";
 import logoVertiv from "@/assets/logo_vertiv_principal.png";
 import { useRouter } from "next/navigation";
 import { LightMode, ModeNight } from "@mui/icons-material";
+import { getCookie } from "cookies-next";
 
 interface optionItemProps {
   label: string;
@@ -55,11 +56,12 @@ const Header: React.FC<HeaderProps> = ({
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [menuAuth, setMenuAuth] = useState<null | HTMLElement>(null);
-  const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
-  const openFlagMenu = Boolean(menuFlag);
-
+  // const [menuFlag, setMenuFlag] = useState<null | HTMLElement>(null);
+  // const openFlagMenu = Boolean(menuFlag);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
+  const name = getCookie("name");
+  const pais = getCookie("pais")?.toString().toLocaleLowerCase();
   const logout = async () => {
     await fetch("http://localhost:4000/api/auth/logout", {
       method: "POST",
@@ -69,14 +71,14 @@ const Header: React.FC<HeaderProps> = ({
     router.push("/login");
   };
 
-  const handleFlagClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setMenuFlag(event.currentTarget);
-  };
+  // const handleFlagClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setMenuFlag(event.currentTarget);
+  // };
 
-  const handleFlagClose = (flag: string | null) => {
-    if (flag) setSelectedFlag(flag);
-    setMenuFlag(null);
-  };
+  // const handleFlagClose = (flag: string | null) => {
+  //   if (flag) setSelectedFlag(flag);
+  //   setMenuFlag(null);
+  // };
 
   const countries = [
     { name: "México", emoji: "mexico" },
@@ -86,7 +88,8 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   const flagImage = () => {
-    switch (selectedFlag) {
+    // switch (selectedFlag) {
+    switch (pais) {
       case "mexico":
         return <Image src={flagMexico} alt="mexico" width={30} height={30} />;
       case "colombia":
@@ -208,13 +211,13 @@ const Header: React.FC<HeaderProps> = ({
               onClick={(event) => setMenuAuth(event.currentTarget)}
               color="inherit"
             >
-              {!isSmallScreen /*&&  session?.user?.name */ ? (
+              {!isSmallScreen && name ? (
                 <Typography
                   variant="body1"
                   textTransform="capitalize"
                   sx={{ pt: 1 }}
                 >
-                  {/* {session?.user?.name.toLocaleLowerCase()} &nbsp; */}
+                  {name}
                 </Typography>
               ) : null}
               <OutputIcon />
@@ -237,14 +240,14 @@ const Header: React.FC<HeaderProps> = ({
             <Button
               variant="text"
               color="secondary"
-              onClick={handleFlagClick}
-              aria-controls={openFlagMenu ? "flag-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={openFlagMenu ? "true" : undefined}
+              // onClick={handleFlagClick}
+              // aria-controls={openFlagMenu ? "flag-menu" : undefined}
+              // aria-haspopup="true"
+              // aria-expanded={openFlagMenu ? "true" : undefined}
             >
               {flagImage()}
             </Button>
-            <Menu
+            {/* <Menu
               id="flag-menu"
               anchorEl={menuFlag}
               open={openFlagMenu}
@@ -258,7 +261,7 @@ const Header: React.FC<HeaderProps> = ({
                   {country.name}
                 </MenuItem>
               ))}
-            </Menu>
+            </Menu> */}
             <IconButton color="secondary" onClick={() => toggleDarkMode()}>
               {darkMode ? <LightMode /> : <ModeNight />}
             </IconButton>
