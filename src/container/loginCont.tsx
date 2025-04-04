@@ -1,29 +1,11 @@
 import React, { useState } from "react";
-import { AlertProps, Container, Grid2, useTheme } from "@mui/material";
+import { Container, Grid2, useTheme } from "@mui/material";
 import IniciarSesion from "@/component/login/iniciarSesion";
 import vertivBackground from "@/assets/vertivBackground.png";
 import logoFCS from "@/assets/logoFCS.png";
 import Image from "next/image";
 import ForgotPswd from "@/component/login/forgotPswd";
-
-// Definimos la estructura de los valores de login
-interface LoginValues {
-  email: string;
-  password: string;
-}
-
-interface AlertCompProps {
-  severity: AlertProps["severity"]; // Usamos el tipo de Material UI para asegurarnos de que sea válido
-  title: string;
-  message: string;
-}
-
-// Definimos las props para el contenedor
-interface LoginContProps {
-  onLogin: (values: LoginValues) => void; // Función que se ejecutará al iniciar sesión
-  setAlertInfo: (values: AlertCompProps) => void;
-  setShowAlert: (values: boolean) => void;
-}
+import { LoginContProps } from "@/types/login";
 
 const LoginCont: React.FC<LoginContProps> = ({
   onLogin,

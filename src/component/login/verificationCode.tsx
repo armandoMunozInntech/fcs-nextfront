@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { AlertProps, Button, Grid2 } from "@mui/material";
+import { Button, Grid2 } from "@mui/material";
 import OTPInput from "../common/OptInput";
+import { VerificationCodeProps } from "@/types/login";
 
-interface AlertCompProps {
-  severity: AlertProps["severity"]; // Usamos el tipo de Material UI para asegurarnos de que sea válido
-  title: string;
-  message: string;
-}
-
-interface getCodeProps {
-  setAlertInfo: (values: AlertCompProps) => void;
-  setShowAlert: (values: boolean) => void;
-  handleNext: () => void;
-}
-
-const VerificationCode: React.FC<getCodeProps> = ({
+const VerificationCode: React.FC<VerificationCodeProps> = ({
   setAlertInfo,
   setShowAlert,
   handleNext,

@@ -1,24 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AlertProps, Box, Button, Grid2, TextField } from "@mui/material";
-
-interface AlertCompProps {
-  severity: AlertProps["severity"]; // Usamos el tipo de Material UI para asegurarnos de que sea válido
-  title: string;
-  message: string;
-}
-interface EmailValues {
-  email: string;
-}
-interface getCodeProps {
-  // `onLogin` es una función que recibe un objeto de tipo `LoginValues`
-  setForgotPswd: (values: boolean) => void; // `onLogin` es una función que recibe un objeto de tipo `LoginValues`
-  setAlertInfo: (values: AlertCompProps) => void;
-  setShowAlert: (values: boolean) => void;
-  setEmailSend: (values: string) => void;
-  handleNext: () => void;
-}
+import { Box, Button, Grid2, TextField } from "@mui/material";
+import { EmailValues, getCodeProps } from "@/types/login";
 
 const GetCode: React.FC<getCodeProps> = ({
   setForgotPswd,

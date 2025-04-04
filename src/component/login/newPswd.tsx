@@ -1,31 +1,8 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  AlertProps,
-  Box,
-  Button,
-  Grid2,
-  TextField,
-  Typography,
-} from "@mui/material";
-
-interface pswdValues {
-  password: string;
-  confirmPassword: string;
-}
-
-interface AlertCompProps {
-  severity: AlertProps["severity"]; // Usamos el tipo de Material UI para asegurarnos de que sea válido
-  title: string;
-  message: string;
-}
-
-interface newPswdProps {
-  setAlertInfo: (values: AlertCompProps) => void;
-  setShowAlert: (values: boolean) => void;
-  setForgotPswd: (values: boolean) => void;
-}
+import { Box, Button, Grid2, TextField, Typography } from "@mui/material";
+import { newPswdProps, pswdValues } from "@/types/login";
 
 const NewPswd: React.FC<newPswdProps> = ({
   setAlertInfo,

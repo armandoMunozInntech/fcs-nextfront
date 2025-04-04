@@ -2,15 +2,8 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, Button, Grid2, TextField, Typography } from "@mui/material";
+import { IniciarSesionProps, LoginValues } from "@/types/login";
 
-interface LoginValues {
-  email: string;
-  password: string;
-}
-interface IniciarSesionProps {
-  onLogin: (values: LoginValues) => void;
-  setForgotPswd: (values: boolean) => void;
-}
 
 const IniciarSesion: React.FC<IniciarSesionProps> = ({
   onLogin,

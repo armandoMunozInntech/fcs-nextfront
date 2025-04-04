@@ -6,7 +6,7 @@ import ticketsRoutes from "./routes/tickets.js";
 import dotenv from "dotenv";
 
 dotenv.config();
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== "prod";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -37,6 +37,6 @@ app.prepare().then(() => {
   });
 
   server.listen(PORT, () => {
-    console.log(`🚀 Servidor Express corriendo en ${FRONTEND_URL}${PORT}`);
+    console.log(`🚀 Servidor Express corriendo en ${FRONTEND_URL}, Puerto backfront: ${PORT}`);
   });
 });

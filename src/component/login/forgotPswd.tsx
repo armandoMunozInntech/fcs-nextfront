@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  AlertProps,
   Grid2,
   Step,
   StepContent,
@@ -11,21 +10,9 @@ import {
 import GetCode from "./getCode";
 import VerificationCode from "./verificationCode";
 import NewPswd from "./newPswd";
+import { ForgotPswdProps } from "@/types/login";
 
-interface AlertCompProps {
-  severity: AlertProps["severity"]; // Usamos el tipo de Material UI para asegurarnos de que sea válido
-  title: string;
-  message: string;
-}
-
-interface IniciarSesionProps {
-  // `onLogin` es una función que recibe un objeto de tipo `LoginValues`
-  setForgotPswd: (values: boolean) => void; // `onLogin` es una función que recibe un objeto de tipo `LoginValues`
-  setAlertInfo: (values: AlertCompProps) => void;
-  setShowAlert: (values: boolean) => void;
-}
-
-const ForgotPswd: React.FC<IniciarSesionProps> = ({
+const ForgotPswd: React.FC<ForgotPswdProps> = ({
   setForgotPswd,
   setAlertInfo,
   setShowAlert,

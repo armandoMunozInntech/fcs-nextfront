@@ -2,22 +2,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import LoginCont from "@/container/loginCont";
 import AlertComp from "@/component/common/alert";
-import { AlertProps } from "@mui/material";
 import Loader from "@/component/common/loader";
 import { sha256 } from "js-sha256";
 import { setCookie } from "cookies-next";
 import api from "@/utils/api";
-
-interface LoginValues {
-  email: string;
-  password: string;
-}
-
-interface AlertCompProps {
-  severity: AlertProps["severity"];
-  title: string;
-  message: string;
-}
+import { LoginValues } from "@/types/login";
+import { AlertCompProps, ApiError } from "@/types/common";
 
 const Login: React.FC = () => {
   const router = useRouter();
@@ -51,18 +41,21 @@ const Login: React.FC = () => {
 
       Object.entries(userData).forEach(([key, value]) => {
         setCookie(key, value || "", {
-          maxAge: 60  ,
+          maxAge: 60 * 60 * 1000,
           path: "/",
         });
       });
 
       router.push("/dashboard"); // Redirigir después del inicio de sesión exitoso
-    } catch (error) {
-      console.error("Error during login:", error);
+    } catch (error: unknown) {
+      console.error(
+        "Error during login:",
+        (error as ApiError)?.response?.data?.message || (error as ApiError).response
+      );
       setAlertInfo({
         severity: "error",
         title: "Error",
-        message: "Error desconocido",
+        message: (error as ApiError)?.response?.data?.message || "Error desconocido",
       });
       setShowAlert(true);
       setLoading(false);
