@@ -7,7 +7,7 @@ import TicketsCont from "@/container/tickets/ticketsCont";
 import { AlertProps } from "@mui/material";
 import AlertComp from "@/component/common/alert";
 import Loader from "@/component/common/loader";
-import api from "@/utils/api";
+import { ticketsList } from "@/api/tickets";
 
 interface AlertCompProps {
   severity: AlertProps["severity"];
@@ -40,8 +40,10 @@ const Tickets: NextPageWithLayout = () => {
   const getTickets = async () => {
     setLoading(true);
     try {
-      const response = await api.post("/api/tickets/ticketsList");
-      setDataTickets(response.data);
+      const response = await ticketsList();
+      console.log("tracklist", response);
+
+      setDataTickets(response);
 
       setLoading(false);
 

@@ -12,7 +12,17 @@ import { useRouter } from "next/router";
 import AlertComp from "@/component/common/alert";
 import Loader from "@/component/common/loader";
 import { getCookie } from "cookies-next";
-import api from "@/utils/api";
+import {
+  actualizarFolio,
+  asignaTicket,
+  asignaTicketCallcenter,
+  cerrarTicket,
+  comentarTicket,
+  detalleTicket,
+  encargadoTicket,
+  garantiaTicket,
+  reasignaTicket,
+} from "@/api/tickets";
 
 interface AlertCompProps {
   severity: AlertProps["severity"];
@@ -82,16 +92,17 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/api/tickets/detalleTicket", { id });
+      const response = await detalleTicket(id);
+      console.log("getDetalleTicket", response);
 
-      if (response.data && !response.data?.isSuccess) {
-        setDetalleTicket(response.data);
+      if (response && !response?.data?.isSuccess) {
+        setDetalleTicket(response?.data[0]);
         setLoading(false);
       } else {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "Falla en servicio",
+          message: response.message || "Falla en servicio",
         });
         setShowAlert(true);
       }
@@ -114,9 +125,7 @@ const DetalleTicket: NextPageWithLayout = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/api/tickets/encargadoTicket", {
-        id_pais,
-      });
+      const response = await encargadoTicket(id_pais as string);
 
       if (response.data && !response.data?.isSuccess) {
         setEncargado(response.data);
@@ -144,17 +153,14 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const asignaTicket = async (encargado: string, procede: string) => {
+  const getAsignaTicket = async (encargado: string, procede: string) => {
     setLoading(true);
 
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/asignaTicket", {
-        id: dataDetalleTicket?.id,
-        id_encargado: encargado,
-        procede,
-      });
+      const response = await asignaTicket(id, encargado, procede);
 
-      if (response.data?.isSuccess) {
+      if (response.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -165,7 +171,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo asignar el ticket",
+          message: response.message || "No se pudo asignar el ticket",
         });
       }
     } catch (error: any) {
@@ -175,7 +181,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         severity: "error",
         title: "Error",
         message:
-          error.response?.data?.message || error.message || "Error desconocido",
+          error.response?.message || error.message || "Error desconocido",
       });
     } finally {
       setShowAlert(true);
@@ -183,17 +189,14 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const reasignaTicket = async (encargado: string, comentario: string) => {
+  const getReasignaTicket = async (encargado: string, comentario: string) => {
     setLoading(true);
 
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/reasignaTicket", {
-        id: dataDetalleTicket?.id,
-        id_encargado: encargado,
-        comentario,
-      });
+      const response = await reasignaTicket(id, encargado, comentario);
 
-      if (response.data?.isSuccess) {
+      if (response.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -204,7 +207,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo reasignar el ticket",
+          message: response.message || "No se pudo reasignar el ticket",
         });
       }
     } catch (error: any) {
@@ -214,7 +217,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         severity: "error",
         title: "Error",
         message:
-          error.response?.data?.message || error.message || "Error desconocido",
+          error.response?.message || error.message || "Error desconocido",
       });
     } finally {
       setShowAlert(true);
@@ -222,16 +225,12 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const asignaTicketCallcenter = async (encargado: string) => {
+  const getAsignaTicketCallcenter = async (encargado: string) => {
     setLoading(true);
-
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/asignaTicketCallcenter", {
-        id: dataDetalleTicket?.id,
-        id_encargado: encargado,
-      });
-
-      if (response.data?.isSuccess) {
+      const response = await asignaTicketCallcenter(id, encargado);
+      if (response.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -242,7 +241,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo asignar el ticket",
+          message: response.message || "No se pudo asignar el ticket",
         });
       }
     } catch (error: any) {
@@ -260,16 +259,13 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const garantiaTicket = async (garantia: string) => {
+  const getGarantiaTicket = async (garantia: string) => {
     setLoading(true);
-
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/garantiaTicket", {
-        id: dataDetalleTicket?.id,
-        garantia,
-      });
+      const response = await garantiaTicket(id, garantia);
 
-      if (response.data?.isSuccess) {
+      if (response.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -280,8 +276,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message:
-            response.data?.message || "No se pudo cambiar estatus del ticket",
+          message: response.message || "No se pudo cambiar estatus del ticket",
         });
       }
     } catch (error: any) {
@@ -299,16 +294,13 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const cerrarTicket = async (comentario: string) => {
+  const getCerrarTicket = async (comentario: string) => {
     setLoading(true);
-
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/cerrarTicket", {
-        id: dataDetalleTicket?.id,
-        comentario,
-      });
+      const response = await cerrarTicket(id, comentario);
 
-      if (response.data?.isSuccess) {
+      if (response.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -319,7 +311,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo cerrar el ticket",
+          message: response.message || "No se pudo cerrar el ticket",
         });
       }
     } catch (error: any) {
@@ -337,16 +329,13 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const comentarTicket = async (comentario: string) => {
+  const getComentarTicket = async (comentario: string) => {
     setLoading(true);
-
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/comentarTicket", {
-        id: dataDetalleTicket?.id,
-        comentario,
-      });
+      const response = await comentarTicket(id, comentario);
 
-      if (response.data?.isSuccess) {
+      if (response.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -358,8 +347,7 @@ const DetalleTicket: NextPageWithLayout = () => {
           severity: "warning",
           title: "Aviso",
           message:
-            response.data?.message ||
-            "No se pudo agregar observación el ticket",
+            response.message || "No se pudo agregar observación el ticket",
         });
       }
     } catch (error: any) {
@@ -377,18 +365,15 @@ const DetalleTicket: NextPageWithLayout = () => {
     }
   };
 
-  const actualizarFolio = async (folio: string) => {
+  const getActualizarFolio = async (folio: string) => {
     setLoading(true);
-
+    const id = (dataDetalleTicket?.id as unknown as string) || "";
     try {
-      const response = await api.post("/api/tickets/actualizarFolio", {
-        id: dataDetalleTicket?.id,
-        folio,
-      });
+      const response = await actualizarFolio(id, folio);
 
       console.log(response.data?.isSuccess);
-      
-      if (response?.data?.isSuccess) {
+
+      if (response?.isSuccess) {
         getDetalleTicket(slug as string);
         setAlertInfo({
           severity: "success",
@@ -399,7 +384,7 @@ const DetalleTicket: NextPageWithLayout = () => {
         setAlertInfo({
           severity: "warning",
           title: "Aviso",
-          message: response.data?.message || "No se pudo actualizar el folio",
+          message: response.message || "No se pudo actualizar el folio",
         });
       }
     } catch (error: any) {
@@ -419,7 +404,7 @@ const DetalleTicket: NextPageWithLayout = () => {
 
   useEffect(() => {
     getEncargado();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -445,13 +430,13 @@ const DetalleTicket: NextPageWithLayout = () => {
       <DetalleTicketCont
         dataDetalleTicket={dataDetalleTicket}
         encargado={encargado}
-        asignaTIcket={asignaTicket}
-        garantiaTicket={garantiaTicket}
-        cerrarTicket={cerrarTicket}
-        actualizarFolio={actualizarFolio}
-        comentarTicket={comentarTicket}
-        reasignaTicket={reasignaTicket}
-        asignaTicketCallcenter={asignaTicketCallcenter}
+        asignaTIcket={getAsignaTicket}
+        garantiaTicket={getGarantiaTicket}
+        cerrarTicket={getCerrarTicket}
+        actualizarFolio={getActualizarFolio}
+        comentarTicket={getComentarTicket}
+        reasignaTicket={getReasignaTicket}
+        asignaTicketCallcenter={getAsignaTicketCallcenter}
       />
     </>
   );

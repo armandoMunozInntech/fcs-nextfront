@@ -7,9 +7,23 @@ export interface AlertCompProps {
 }
 
 export interface ApiError {
-    response?: {
-      data?: {
-        message?: string;
-      };
+  response?: {
+    data?: {
+      message?: string;
     };
-  }
+  };
+}
+
+export interface ParsedUserData {
+  email: string;
+  name: string;
+  id_perfil: string;
+  id_pais: string;
+  pais: string;
+  sessionTime: string | number;
+}
+
+export interface UserDataItem {
+  dato: string;
+  valor: string | number;
+}

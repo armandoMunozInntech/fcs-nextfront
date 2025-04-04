@@ -15,7 +15,10 @@ interface ContEstatusAbiertoProps {
   garantiaTicket: (garantia: string) => void;
 }
 
-const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({ setOpen, garantiaTicket }) => {
+const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({
+  setOpen,
+  garantiaTicket,
+}) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -29,7 +32,7 @@ const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({ setOpen, garant
     },
     validationSchema,
     onSubmit: (values) => {
-      garantiaTicket(values.garantia.toString())
+      garantiaTicket(values.garantia.toString());
 
       setOpen(false);
     },
@@ -69,7 +72,9 @@ const ContEstatusProceso: React.FC<ContEstatusAbiertoProps> = ({ setOpen, garant
               id="procede"
               name="procede"
               value={modalFormik.values.garantia}
-              onChange={modalFormik.handleChange}
+              onChange={(e) => {
+                modalFormik.setFieldValue("garantia", e.target.checked);
+              }}
             />
             Si
           </Grid2>

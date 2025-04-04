@@ -21,6 +21,7 @@ import logoVertiv from "@/assets/logo_vertiv_principal.png";
 import { useRouter } from "next/navigation";
 import { LightMode, ModeNight } from "@mui/icons-material";
 import { getCookie } from "cookies-next";
+import { logout } from "@/api/auth";
 
 interface optionItemProps {
   label: string;
@@ -73,11 +74,8 @@ const Header: React.FC<HeaderProps> = ({
     }
   }, []);
 
-  const logout = async () => {
-    await fetch("http://localhost:4000/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+  const logoutHandle = async () => {
+    await logout();
 
     router.push("/login");
   };
@@ -241,7 +239,7 @@ const Header: React.FC<HeaderProps> = ({
             >
               <MenuItem
                 onClick={() => {
-                  logout();
+                  logoutHandle();
                 }}
               >
                 Cerrar Sesión

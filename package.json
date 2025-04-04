@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"next dev\" \"node -r dotenv/config server/server.js\"",
+    "dev": "next dev",
     "build": "next build",
-    "start": "node -r dotenv/config server/server.js",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,14 +16,10 @@
     "@mui/material": "^6.4.7",
     "@mui/x-date-pickers": "^7.28.0",
     "axios": "^1.8.4",
-    "concurrently": "^9.1.2",
-    "cookie": "^1.0.2",
-    "cookie-parser": "^1.4.7",
     "cookies-next": "^5.1.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
     "formik": "^2.4.6",
     "js-sha256": "^0.11.0",
     "jsonwebtoken": "^9.0.2",
